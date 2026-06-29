@@ -13,7 +13,7 @@ platform that makes the expert decisions for them*.
 
 | Document | What it is |
 |---|---|
-| [`unified-data-ai-platform-plan.md`](./unified-data-ai-platform-plan.md) | The vision/concept note — current state, personas, the four pillars, the 6-layer architectural blueprint, the corrected AI-driven ILM, query routing, online/product-facing serving, and the self-reinforcing RAG knowledge base. |
+| [`unified-data-ai-platform-plan.md`](./unified-data-ai-platform-plan.md) | The vision/concept note — current state, personas, the four pillars, the 6-layer architectural blueprint, the corrected ILM model, query routing, online/product-facing serving, and the self-reinforcing RAG knowledge base. |
 | [`roadmap-3-year.md`](./roadmap-3-year.md) | The sequenced 3-year roadmap — **Foundation → Intelligence → Autonomy**, agentic maturity ladder, phase gates, KPIs, risks, decisions, and the **team plan**. |
 
 ## Architecture at a glance
@@ -34,8 +34,10 @@ d2 diagram-after-future-vision.d2  diagram-after-future-vision.svg
 
 ## Key ideas
 
-- **Unified Storage** — Apache Iceberg on MinIO as the single *source of truth*
-  (not a single physical copy), with AI-driven lifecycle / cache / bounded-copy tiering.
+- **Unified Platform** — one logical platform over the Iceberg lakehouse, Doris,
+  and Trino (Iceberg-on-MinIO stays the single *source of truth*, not a single
+  physical copy). The engineering gap is unifying serving / query routing and
+  tiering — built rule-based, with AI optimizing the decisions later.
 - **Global Semantic Layer** — meaning, metrics, lineage, and governance encoded
   once so every engine and agent answers consistently and correctly.
 - **Agentic Control Plane** — agents that auto-route, auto-tune, auto-scale, and

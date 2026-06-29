@@ -111,7 +111,7 @@ owners self-serve and taking us out of the critical path.
 |---|---|---|---|
 | **P1** · Lakehouse, Iceberg, object storage | **B** | — | — |
 | **P1** · Zero-ETL / federation connectors | **B** | **O** onboard & register sources | — |
-| **P1** · AI-driven ILM (object lifecycle · SSD cache · bounded serving copy) | **B** | sets retention / SLA inputs | — |
+| **P1** · ILM mechanisms (object lifecycle · SSD cache · bounded serving copy) | **B** | sets retention / SLA inputs | — |
 | **P2** · Semantic-layer framework + lineage | **B** | — | — |
 | **P2** · Metric & business-logic definitions | provides tooling | **O** author & certify | **U** consume / request |
 | **P2** · Privacy & governance constraints | **B** enforce | **O** define per domain | **U** comply |
@@ -194,59 +194,90 @@ hand-building reports, dashboards, and models. As agentic AI matures:
 
 ## 4. What We Need to Build — The Four Pillars + a Cross-Cutting Enabler
 
-### Pillar 1 — Converged, Zero-ETL Lakehouse Foundation ("Unified Storage")
-*Goal: one foundation for both analytical and operational data, at scale.*
+### Pillar 1 — Unified Data Platform ("Unify the Engines We Already Run")
+*Goal: make the storage and engines we already run — Iceberg, Doris, Trino —
+behave as **one platform**, so users and agents stop hand-picking engines. This is
+the **platform-engineering** pillar: it builds the **mechanism**, while the three
+AI pillars automate the **decisions**.*
 
-- **Converge** the analytical warehouse and the operational data lake onto a
-  single foundation built on **open table formats (Iceberg)** + intelligent
-  object-storage tiering.
-- **Open data foundation for agentic AI** *(AWS, ref [1])*. The foundation must
-  be an open, interoperable architecture that lets AI agents **find, access,
-  trust, and act on data across systems** — explicitly avoiding vendor lock-in
-  via open-source tech, **open table formats, and managed data services**.
-  **Iceberg is the linchpin**: one open table format that works across query
-  engines and processing frameworks, so engines stay swappable as agents evolve.
-- **Reduce brittle pipelines.** Replace manual extract-from-legacy jobs with
-  **Zero-ETL integrations** and **federated query** to process data *in place*
-  (directly addresses the "training data trapped in Oracle" problem).
-- **AI-driven Information Lifecycle Management (ILM).** *Single source of truth
-  ≠ single physical copy.* Iceberg-on-MinIO is the canonical record for **all**
-  data; derived serving tiers are allowed only if they are auto-derived from
-  Iceberg, governed by the same semantic layer, and reconcilable to it. ILM
-  operates at **three levels**:
-  - **A · Lake object lifecycle** — auto-tier Iceberg files hot→warm→cold and
-    compact / expire snapshots. *Format-agnostic — the data stays Iceberg.*
-    (cf. AWS S3 Intelligent-Tiering, ref [11]; Databricks Predictive
-    Optimization, ref [12].)
-  - **B · Local SSD cache tier** — Doris / Trino cache the hot Iceberg working
-    set on local NVMe (ephemeral LRU, **not a second copy**), recovering most of
-    the latency for ad-hoc and the majority of BI while keeping one format.
-    (cf. Databricks disk cache, ref [12]; Doris / StarRocks external-table data
-    cache, ref [13].)
-  - **C · Serving-copy promotion (bounded exception)** — only the few
-    **real-time, high-QPS** dashboards are auto-materialized into **Doris-native**
-    on SSD, where Iceberg-on-object-store is genuinely weakest (real-time upserts
-    + very high concurrency). Auto-fed from Iceberg; identical semantic logic.
-  The **"AI" job of ILM is the promotion / routing decision** — predicting which
-  datasets warrant direct-query → cache (B) → native serving copy (C) by latency
-  SLA and concurrency, not blindly "moving data into Doris."
+**What we already run — the foundation, not the gap.** Iceberg on MinIO, Trino
+(federation), Doris (hot OLAP), and CDC between them are **already in production**.
+Iceberg is our open, cross-engine table format and **stays the single source of
+truth** — engines remain swappable because they all read one open format *(open
+data foundation, AWS ref [1])*. So the gap is **not storage**; it is that these
+are still **separate engines users must choose between by hand** (the §1 friction).
 
-  > **Provenance & correction:** the original *"tier between MinIO and Doris"*
-  > phrasing came from the **Gemini brainstorm** (ref [10]) — not an AWS/Databricks source
-  > (which is why it was uncited). As written it conflated *storage tiering* with
-  > *engine / format choice* — promoting data into Doris-native is a **second
-  > format**, which is what appeared to break the Iceberg-single-format goal. The
-  > three-level model above resolves it and is grounded in real primitives
-  > [11]–[13]. **Chosen stance: Hybrid** — Iceberg is the system of record for
-  > everything; native serving copies exist only for the few real-time / high-QPS
-  > dashboards.
+**The gap to build — make them one platform (no AI required):**
 
-**Maps to our current stack:** Iceberg ✅, Trino (federation) ✅, Doris (hot
-OLAP) ✅ — the new work is *Zero-ETL ingestion* and the *AI-driven ILM* (lifecycle · cache · bounded promotion).
+- **Unified serving & query routing across Doris and Trino.** One logical entry
+  point routes each request to the right engine over the same Iceberg source of
+  truth, *deterministically by rule*. The hard part: Doris and Trino are **not
+  SQL-compatible** (Doris is MySQL-dialect — backtick identifiers, `DATE_FORMAT`;
+  Trino is ANSI — double-quotes, `format_datetime`, lambdas), so the platform
+  routes **logical intent, not raw SQL**:
+  - **Semantic-layer compilation (primary).** Queries hit the semantic layer
+    (Pillar 2), not a raw engine; a per-engine compiler emits **native Doris SQL
+    *or* native Trino SQL**. *Compatibility by generation, not translation* (cf.
+    dbt MetricFlow, Cube, Malloy, ref [16]).
+  - **Canonical dialect + transpiler (raw SQL).** Power users / legacy tools
+    standardize on **one canonical dialect (Trino ANSI)**: route to Trino → pass
+    through; route to Doris → **transpile** (SQLGlot, ref [14]; Calcite, ref [15]),
+    best-effort.
+  - **Route by data product (the pragmatic shrink).** Doris serves curated
+    dashboards with generated, known SQL; arbitrary ad-hoc defaults to Trino — few
+    queries ever need cross-engine portability.
+  - **Guardrails:** **Trino-on-Iceberg is the always-correct fallback** — if the
+    fast path can't be compiled / transpiled safely (or a dataset has no Doris
+    copy), read Iceberg via Trino (*correctness beats latency*); and **consistency
+    comes from the semantic layer, not identical SQL** — the same metric
+    definition returns the same number on either engine.
+- **Storage tiering & serving mechanisms (ILM).** *Single source of truth ≠ single
+  physical copy.* Iceberg-on-MinIO is canonical for **all** data; derived tiers are
+  allowed only if auto-derived from Iceberg and reconcilable to it. Three levels:
+  - **A · Lake object lifecycle** — tier Iceberg files hot→warm→cold; compact /
+    expire snapshots. *Format-agnostic — the data stays Iceberg.* (cf. AWS S3
+    Intelligent-Tiering, ref [11]; Databricks Predictive Optimization, ref [12].)
+  - **B · Local SSD cache tier** — Doris / Trino cache the hot Iceberg working set
+    on local NVMe (ephemeral LRU, **not a second copy**), recovering most of the
+    latency for ad-hoc and BI while keeping one format. (cf. Databricks disk cache,
+    ref [12]; Doris / StarRocks external-table data cache, ref [13].)
+  - **C · Serving-copy promotion (bounded exception)** — only the few **real-time,
+    high-QPS** dashboards are materialized into **Doris-native** on SSD, where
+    Iceberg-on-object-store is genuinely weakest (real-time upserts + very high
+    concurrency). Auto-fed from Iceberg; identical semantic logic.
+- **Zero-ETL / federation to retire brittle pipelines.** Replace manual
+  extract-from-legacy jobs with **Zero-ETL integrations** and **federated query**
+  to process data *in place* (directly addresses the "training data trapped in
+  Oracle" problem).
 
-**Personas:** 🛠️ *Platform Team* builds the lakehouse, connectors & ILM engine ·
-📦 *Data Owners* onboard and register their source datasets · 🔍 *Data Users*
-read through engines (no direct ownership here).
+> **Provenance & correction:** the original *"tier between MinIO and Doris"*
+> phrasing came from the **Gemini brainstorm** (ref [10]) — not an AWS/Databricks source
+> (which is why it was uncited). As written it conflated *storage tiering* with
+> *engine / format choice* — promoting data into Doris-native is a **second
+> format**, which is what appeared to break the Iceberg-single-format goal. The
+> three-level model above resolves it and is grounded in real primitives
+> [11]–[13]. **Chosen stance: Hybrid** — Iceberg is the system of record for
+> everything; native serving copies exist only for the few real-time / high-QPS
+> dashboards.
+
+**Mechanism vs. decision — why this is the non-AI pillar.** Pillar 1 builds the
+**mechanism**: routing, dialect compilation, tiering, cache, and bounded serving
+copies — all driven by **explicit rules and policies**, shippable and valuable
+without any model. **Which** dataset to cache or promote, and **where** to route a
+borderline query, is a *decision* the agentic control plane (Pillar 4) and the
+self-reinforcing KB **automate later** — but the mechanism must exist first, with
+or without AI.
+
+**Maps to our current stack:** Iceberg ✅, Trino (federation) ✅, Doris (hot OLAP)
+✅, CDC ✅ — **already in production**. The new work is the **unified
+serving / routing layer**, the **tiering & serving mechanisms**, and **Zero-ETL
+ingestion** — all plain platform engineering; AI automation of the routing /
+promotion *decisions* comes later (Pillar 4 + the enabler).
+
+**Personas:** 🛠️ *Platform Team* builds the unified serving / routing layer, the
+tiering engine & connectors · 📦 *Data Owners* onboard and register their source
+datasets · 🔍 *Data Users* query through one logical entry point — no manual
+engine choice.
 
 ---
 
@@ -414,7 +445,7 @@ keep separate:
 │ LAYER 3 · UNIFIED STORAGE — THE ZERO-LOCK-IN LAKEHOUSE                   │
 │     replaces proprietary warehouses + fragmented data lakes              │
 │     • Open table format: Apache Iceberg     • Object storage: MinIO      │
-│     • AI-driven ILM: lifecycle + cache, one Iceberg copy (100+ PB)       │
+│     • Engineering ILM: lifecycle + cache, one Iceberg copy (100+ PB)     │
 └──────────────────────────────────────────────────────────────────────────┘
           │
           ▼
@@ -454,7 +485,7 @@ keep separate:
 | 2 · Agentic Control Plane & Semantic Layer | **P2 + P4** (fused) | 🛠️ Platform builds · 📦 Owners define · agents enforce |
 | 3 · Unified Storage (zero-lock-in lakehouse) | **P1** | 🛠️ Platform · 📦 Owners onboard |
 | 4 · Unified Processing & Agentic AI Engine | **P3** (+ P4 ops) | 🛠️ Platform · 🔍 Users |
-| 5 · Serving & Query Engine (bi-modal) | **P1** serving | 🛠️ Platform (agents route) |
+| 5 · Serving & Query Engine (bi-modal) | **P1** serving | 🛠️ Platform (rule-routed; agents optimize) |
 | 6 · Output & Applications | Consumers | 🔍 Data Users |
 
 ### What we retire vs. what replaces it
@@ -465,7 +496,7 @@ decoupled 2020-era components are truncated and folded into the converged stack.
 | Layer | Retired / truncated (2020-era) | Replaced by |
 |---|---|---|
 | **2** | Standalone data catalogs, manual Airflow/ETL orchestration, isolated metrics layers | Active **LLM-driven control plane** enforcing one semantic layer across Doris, Trino & ML — e.g. a single definition of "monthly active users" everywhere |
-| **3** | Proprietary warehouse storage; the hard Lake ↔ Warehouse divide | **Apache Iceberg on MinIO** as the single source of truth; **AI-driven ILM** keeps one Iceberg copy and tiers / caches by access pattern + latency SLA (object lifecycle · SSD cache · bounded native copy) across **100+ PB** |
+| **3** | Proprietary warehouse storage; the hard Lake ↔ Warehouse divide | **Apache Iceberg on MinIO** as the single source of truth; **engineering ILM** (rule-based; AI-optimized later) keeps one Iceberg copy and tiers / caches by access pattern + latency SLA (object lifecycle · SSD cache · bounded native copy) across **100+ PB** |
 | **4** | Independent MLOps training stack (Kubeflow, standalone MLflow); isolated heavy-transform tools (dbt) | **Spark does both** transform & training (MLlib/XGBoost); **LLMs operate Hyperopt** to run experiments, solve cold-start & auto-train; **Celery-managed k6** load testing baked into the **5000+ core** tier |
 | **5** | Generalized one-size serving engines (e.g. Presto as both BI + batch) | **Bi-modal, control-plane-routed:** Doris for real-time / fast-refresh BI, Trino for massive ad-hoc history — **both query the same Iceberg tables (one source of truth)**; only the few real-time / high-QPS dashboards get a thin, auto-fed Doris-native copy |
 | **6** | Static BI dashboards | Accessible analytics, **autonomous AI data scientists**, and **RAG-native agentic apps** over Iceberg |
@@ -478,40 +509,14 @@ decoupled 2020-era components are truncated and folded into the converged stack.
 > through agent governance, and makes the **bi-modal serving split (Layer 5)**
 > explicit.
 
-### Query routing & dialect handling (how bi-modal serving actually works)
+### Query routing & dialect handling
 
-"Bi-modal, control-plane-routed" only works because Doris and Trino are **not
-SQL-compatible** (Doris is MySQL-protocol / MySQL-dialect — backtick identifiers,
-`DATE_FORMAT`, `APPROX_COUNT_DISTINCT`; Trino is ANSI / Presto — double-quote
-identifiers, `format_datetime`, `approx_distinct`, lambdas). So the control plane
-**never routes a raw dialect-specific SQL string between engines.** It routes
-*logical intent* — which is exactly why Layer 2 fuses the control plane **with**
-the semantic layer. Three mechanisms, layered:
-
-1. **Semantic-layer compilation — primary.** Users / agents / BI tools query the
-   semantic layer, not a raw engine. The logical model is defined **once** and a
-   **per-engine compiler emits native Doris SQL *or* native Trino SQL**. The
-   router picks the engine; the semantic layer produces the dialect.
-   *Compatibility is solved by generation, not translation* (cf. dbt MetricFlow,
-   Cube, Malloy, ref [16]).
-2. **Canonical dialect + transpiler — secondary (raw SQL).** Power users / legacy
-   tools standardize on **one canonical dialect (Trino ANSI)**. Routed to Trino →
-   pass through; routed to Doris → **transpile** (SQLGlot, ref [14]; or Apache
-   Calcite, ref [15]) — best-effort, with the fallback below on any unsupported
-   construct.
-3. **Route by data product — the pragmatic shrink.** The Doris-native path serves
-   **curated dashboards / metrics with generated, known SQL**; arbitrary human
-   ad-hoc defaults to Trino. Very few queries ever need cross-engine portability.
-
-**Two guardrails:**
-- **Trino-on-Iceberg is the always-correct fallback.** If the router can't safely
-  compile / transpile to the fast engine (or the dataset has no Doris serving
-  copy), it defaults to Trino reading Iceberg. *Correctness beats latency — never
-  silently return a wrong result.*
-- **Consistency comes from the semantic layer, not identical SQL.** Both engines
-  derive from the same Iceberg source of truth and the same metric definitions,
-  so "monthly active users" returns the same number whether compiled to Doris or
-  Trino — even though the SQL text differs.
+Bi-modal serving (Layer 5) works by routing **logical intent, not raw SQL** —
+Doris (MySQL dialect) and Trino (ANSI) are not SQL-compatible, so the platform
+never ships a raw dialect-specific string between engines. The full mechanism —
+semantic-layer compilation, canonical-dialect transpile, route-by-data-product,
+and the **Trino-on-Iceberg always-correct fallback** — is detailed in **Pillar 1
+(§4)**, where it belongs as core platform engineering.
 
 > **Net:** transparent cross-engine routing of *raw* SQL is not realistically
 > achievable — bi-modal serving is viable only because the **semantic layer sits
@@ -646,7 +651,7 @@ endpoints / SDKs** into the product, not SQL notebooks.
 
 | Pillar / Capability | From (today) | To (vision) | Key tech | Persona focus |
 |--------|--------------|-------------|----------|---------------|
-| 1. Foundation | Separate lake + warehouse, manual ETL from Oracle | Converged Zero-ETL lakehouse with AI-driven ILM | Iceberg, Trino federation, Doris/ClickHouse, MinIO | 🛠️ Platform builds · 📦 Owners onboard |
+| 1. Unified Platform | Separate engines, manual engine choice, ETL from Oracle | One platform over Iceberg/Doris/Trino — rule-based routing + engineering ILM (AI-optimized later) | Iceberg, Trino federation, Doris/ClickHouse, MinIO | 🛠️ Platform builds · 📦 Owners onboard |
 | 2. Semantic | Physical tables | Global semantic layer / accessible analytics | Central semantic layer, lineage, embedded privacy | 🛠️ Platform builds · 📦 Owners define · 🔍 Users consume |
 | 3. Data Science | Separate ML platform, legacy training data | Unified agentic Data + AI hub | LLM agents + XGBoost/Spark MLlib + Hyperopt | 🛠️ Platform builds · 🔍 Users build models |
 | 4. Operations | Manual tuning & monitoring | Autonomous ops & stewardship | Agent auto-tuning, Celery load testing, steward agents | 🛠️ Platform builds & operates · 📦 Owners remediate |
@@ -714,7 +719,7 @@ endpoints / SDKs** into the product, not SQL notebooks.
 ## 10. Reference Sources
 
 ### 10.1 Extended Materials — AWS Agentic AI & Data Foundation (2025–2026)
-These shaped the **"Unified Storage"** (Pillar 1) and **"Agentic Control Plane"**
+These shaped the **"Unified Platform"** (Pillar 1) and **"Agentic Control Plane"**
 (Pillar 4) layers and reflect the latest agent-operated-systems thinking.
 
 1. **Data Foundation for Agentic AI — Open Architecture (AWS).**
