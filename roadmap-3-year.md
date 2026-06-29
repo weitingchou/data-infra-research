@@ -102,6 +102,25 @@ Short runway to make the decisions everything else depends on.
 The goal of Year 1 is *not* agents — it is the substrate that makes agents
 possible, plus one high-ROI quick win.
 
+**What we achieve this year:**
+- **Decouple intent from physical engines.** Stand up the semantic layer (v1) and
+  certify it for the highest-volume domains, so users and tools query one logical
+  model instead of raw Doris/Trino tables. This is the foundation everything else
+  builds on — you can't auto-route a request until intent is expressed
+  independently of the engine.
+- **Make Iceberg the single source of truth.** Land all new datasets in
+  Iceberg-on-MinIO as the canonical record, and add a local SSD cache to recover
+  query latency without creating a second copy or format. One governed source
+  keeps every serving tier reconcilable and ends the lake-vs-warehouse split.
+- **Instrument everything from Day 1.** Capture 100% of queries, declared intent,
+  query plans, cost, and SLA outcomes into a query-history store. We start now —
+  well before any agent uses it — because the knowledge base that later grounds
+  routing and optimization needs a large corpus that only accumulates over time.
+- **Relieve the engine-choice bottleneck with a quick win.** Ship an advisory
+  recommender that suggests Doris vs. Lakehouse from each user's declared
+  requirement, so owners stop guessing and we stop being paged for routine
+  choices. It delivers value early and builds trust before heavier automation lands.
+
 | # | Initiative | Ships | Pillar |
 |---|---|---|---|
 | 1.1 | **Semantic layer v1** | Central metric/definition catalog, lineage, governance constraints; certify the top domains by query volume | P2 |
@@ -126,6 +145,24 @@ stops being paged for every routine engine choice.
 
 ## Year 2 — INTELLIGENCE
 **Theme: turn the corpus into a RAG knowledge base; agents go advisory → assisted; automate tiering; light up online serving.**
+
+**What we achieve this year:**
+- **Move agents from advisory to assisted (L2).** Auto-routing and ILM tiering now
+  act on a one-click approval (with a Trino-on-Iceberg fallback for safety), so
+  manual engine choice disappears for most workloads. Agents act but a human still
+  approves — earning trust before we hand over full autonomy.
+- **Turn the corpus into a live knowledge base.** Stand up retrieval (RAG) over the
+  query/intent/outcome history so agents can ground routing and optimization in
+  what has actually worked here before. This is what makes the assisted decisions
+  better than generic heuristics.
+- **Begin online serving and ML convergence.** Light up the first product-facing
+  real-time cases on the streaming backbone + feature store, and serve the first
+  model-training data from the platform instead of legacy Oracle. We roll these
+  out against real use cases rather than big-bang.
+- **Give business operators conversational Q&A.** In the first well-governed
+  domains, operators ask questions in natural language and an agent answers
+  through the semantic layer so the result is correct, not just fluent. Analysts
+  keep hand-building everything more complex.
 
 | # | Initiative | Ships | Pillar |
 |---|---|---|---|
@@ -154,6 +191,23 @@ picks to genuinely complex cases.
 
 ## Year 3 — AUTONOMY
 **Theme: agents operate the platform within guardrails; fully intent-driven; closed-loop knowledge base; Data + AI converged.**
+
+**What we achieve this year:**
+- **Let agents run the platform within guardrails (L3).** Routing, tiering,
+  scaling, recovery, and stewardship run autonomously, with humans on-loop to set
+  policy and approve only high-risk actions. The platform shifts from tools we
+  operate to a control plane that operates itself.
+- **Reach a fully intent-driven platform.** Users and agents declare what they
+  need and the platform decides the engine, sizing, and tiering on its own — no
+  human in the engine or infrastructure decision, which is the North Star. This is
+  where the manual-choice bottleneck from §1 finally closes.
+- **Run one converged Data + AI platform.** The separate ML platform is merged into
+  a single workspace where the same agents orchestrate both training and inference
+  over the same governed data — one platform to operate and govern, not two.
+- **Generalize product-facing serving to GA.** Online serving runs at 99.9%+ SLA
+  with hard workload isolation, and operator-facing conversational self-serve
+  covers a growing share of routine questions — while experts still hand-build the
+  complex, high-stakes work.
 
 | # | Initiative | Ships | Pillar |
 |---|---|---|---|
