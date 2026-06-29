@@ -192,7 +192,7 @@ hand-building reports, dashboards, and models. As agentic AI matures:
 
 ---
 
-## 4. What We Need to Build — The Four Pillars
+## 4. What We Need to Build — The Four Pillars + a Cross-Cutting Enabler
 
 ### Pillar 1 — Converged, Zero-ETL Lakehouse Foundation ("Unified Storage")
 *Goal: one foundation for both analytical and operational data, at scale.*
@@ -345,7 +345,8 @@ agents and sets the guardrails · 📦 *Data Owners* act on steward-agent alerts
 their domain · 🔍 *Data Users* benefit from the reliability (consume SLOs).
 
 ### Cross-cutting enabler — the Self-Reinforcing RAG Knowledge Base
-*Goal: turn the platform's own usage into what makes its agents smarter.*
+*Not a fifth pillar but a capability that spans all four — it turns the
+platform's own usage into what makes its agents smarter.*
 
 **Why we have the data.** The platform is the **central data hub** — *every*
 query, and increasingly every **intent** (§3), lands and is processed here — so we
