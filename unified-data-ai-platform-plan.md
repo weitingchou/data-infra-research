@@ -192,7 +192,7 @@ hand-building reports, dashboards, and models. As agentic AI matures:
 
 ---
 
-## 4. The Four Pillars
+## 4. What We Need to Build — The Four Pillars
 
 ### Pillar 1 — Converged, Zero-ETL Lakehouse Foundation ("Unified Storage")
 *Goal: one foundation for both analytical and operational data, at scale.*
