@@ -87,7 +87,7 @@ control: "4 — Agentic Control Plane  ·  Autonomous Ops" {
   route: "Auto-route / auto-tier — picks engine & tier (encodes ex-services-team judgment)" {class: ai}
 }
 
-# ---- RAG Knowledge Flywheel (NEW) ----
+# ---- Self-Reinforcing RAG Knowledge Base (NEW) ----
 kb: "In-house Knowledge Base (RAG) — queries · intent · plans · outcomes" {
   shape: cylinder
   style: {fill: "#FFF3E0"; stroke: "#EF6C00"; bold: true}
@@ -151,7 +151,7 @@ serving.online -> product: serves
 semantic -> serving: "consistent definitions" {style: {stroke: "#2E7D32"; stroke-dash: 3}}
 control -> serving: operate {style: {stroke: "#F9A825"; stroke-dash: 3}}
 
-# ---- RAG flywheel: control plane writes telemetry & retrieves to ground decisions ----
+# ---- RAG knowledge base: control plane writes telemetry & retrieves to ground decisions ----
 control -> kb: "writes telemetry (every query · intent · outcome)" {style: {stroke: "#EF6C00"; stroke-dash: 3}}
 kb -> control: "RAG: retrieve to ground decisions" {style: {stroke: "#EF6C00"; stroke-dash: 3}}
 

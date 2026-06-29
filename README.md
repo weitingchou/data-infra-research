@@ -13,7 +13,7 @@ platform that makes the expert decisions for them*.
 
 | Document | What it is |
 |---|---|
-| [`unified-data-ai-platform-plan.md`](./unified-data-ai-platform-plan.md) | The vision/concept note — current state, personas, the four pillars, the 6-layer architectural blueprint, the corrected AI-driven ILM, query routing, online/product-facing serving, and the RAG knowledge flywheel. |
+| [`unified-data-ai-platform-plan.md`](./unified-data-ai-platform-plan.md) | The vision/concept note — current state, personas, the four pillars, the 6-layer architectural blueprint, the corrected AI-driven ILM, query routing, online/product-facing serving, and the self-reinforcing RAG knowledge base. |
 | [`roadmap-3-year.md`](./roadmap-3-year.md) | The sequenced 3-year roadmap — **Foundation → Intelligence → Autonomy**, agentic maturity ladder, phase gates, KPIs, risks, decisions, and the **team plan**. |
 
 ## Architecture at a glance
@@ -39,7 +39,7 @@ d2 diagram-after-future-vision.d2  diagram-after-future-vision.svg
 - **Global Semantic Layer** — meaning, metrics, lineage, and governance encoded
   once so every engine and agent answers consistently and correctly.
 - **Agentic Control Plane** — agents that auto-route, auto-tune, auto-scale, and
-  steward, grounded by a **RAG knowledge flywheel** built from the platform's own
+  steward, grounded by a **self-reinforcing RAG knowledge base** built from the platform's own
   query + intent telemetry.
 - **Online / product-facing serving** — real-time OLAP + an online feature store
   for ML inference, fed by a streaming backbone and reconciled to the lake.

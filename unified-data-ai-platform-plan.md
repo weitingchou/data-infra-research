@@ -268,22 +268,22 @@ read through engines (no direct ownership here).
   foundation's promise that agents can *find, access, **trust**, and act* on data
   is only realizable if meaning, lineage, and privacy constraints are encoded
   here — semantics + governance are what make autonomous action safe.
-- **Data as the differentiator for gen AI** *(AWS Gen AI white paper, ref [4]).*
-  As foundation models commoditize, the model stops being the edge — everyone can
-  call the same LLM. The durable moat becomes your **proprietary, well-governed
-  data**, so a gen-AI strategy is really a data-platform strategy. Data becomes
-  the differentiator through four mechanisms:
+- **Data is the differentiator for gen AI** *(AWS Gen AI white paper, ref [4]).*
+  As foundation models commoditize, the model stops being the edge — everyone
+  calls the same LLM. The lasting advantage is your **proprietary, well-governed
+  data**, so a gen-AI strategy is really a data-platform strategy. Data
+  differentiates through four mechanisms:
   - **Grounding / RAG** — your facts, metrics & history retrieved at inference.
   - **Fine-tuning / adaptation** — your domain's vocabulary, patterns, edge cases.
   - **ML features** — a commodity algorithm + years of proprietary signal = the
     real predictive power.
   - **Eval / feedback loops** — your usage data to measure and improve quality.
   *Examples:* a raw LLM cannot answer *"Q3 churn for the enterprise-SMB segment"*
-  — only governed data + the semantic layer's certified metric can ground it; and
-  two competitors on the **same** model diverge entirely on who has cleaner,
-  PII-governed, well-labelled data. **Sharp version: a generic model + your
-  governed data beats a better model + generic data** — and "governed" is exactly
-  what the semantic layer (this pillar) provides.
+  — only governed data plus the semantic layer's certified metric can ground it;
+  and two competitors on the **same** model diverge entirely on who has cleaner,
+  PII-governed, well-labelled data. **The point: a generic model on your governed
+  data beats a better model on generic data** — and "governed" is exactly what the
+  semantic layer (this pillar) provides.
 
 **Personas:** 🛠️ *Platform Team* builds the semantic-layer & governance engine ·
 📦 *Data Owners* author metrics, business logic & privacy rules and **certify**
@@ -344,34 +344,38 @@ is their home**: build models, run SQL/GenAI, and direct the agents.
 agents and sets the guardrails · 📦 *Data Owners* act on steward-agent alerts for
 their domain · 🔍 *Data Users* benefit from the reliability (consume SLOs).
 
-### Cross-cutting enabler — the RAG Knowledge Flywheel
-*Goal: turn the platform's own usage into the fuel that makes its agents smart.*
+### Cross-cutting enabler — the Self-Reinforcing RAG Knowledge Base
+*Goal: turn the platform's own usage into what makes its agents smarter.*
 
-Because the platform is the **central data hub** — *every* query, and increasingly
-every **intent** (§3), lands and is processed here — we sit on a uniquely rich
-corpus: what was asked, by whom, over which datasets, how it was planned and
-routed, what it cost, and whether it met its SLA. We **capture that corpus as an
-in-house knowledge base** and let the agents **retrieve over it (RAG)** to ground
-their decisions in what has actually worked here before — not generic heuristics.
+**Why we have the data.** The platform is the **central data hub** — *every*
+query, and increasingly every **intent** (§3), lands and is processed here — so we
+sit on a uniquely rich corpus:
 
-This knowledge base feeds the AI-driven parts already in this plan:
+- **What we capture:** what was asked, by whom, over which datasets, how it was
+  planned and routed, what it cost, and whether it met its SLA.
+- **How agents use it:** we keep that corpus as an **in-house knowledge base** and
+  let agents **retrieve over it (RAG)** to ground decisions in what has actually
+  worked here before — not generic heuristics.
+
+**What it feeds** — the AI-driven parts already in this plan:
+
 - **Query optimization** — retrieve similar past queries and their winning plans
   to guide execution.
-- **Query / data routing** — the ILM promotion decision (§4, Pillar 1) and the
+- **Query / data routing** — the ILM promotion decision (Pillar 1) and the
   bi-modal routing (§5) consult prior outcomes to pick Doris / Trino / cache /
   native copy.
 - **Autonomous operations** — past incidents, tuning actions and their results
-  become retrievable playbooks for the ops / steward agents (§4, Pillar 4).
+  become retrievable playbooks for the ops / steward agents (Pillar 4).
 - **Infra scaling** — historical load and spike patterns inform capacity and
   pre-scaling decisions.
 - **Engine-choice guidance** — the very judgment the professional-services team
   makes today (§2) becomes a retrievable, self-serve recommendation.
 
-It is a **flywheel**: more usage → a richer knowledge base → better agent
-decisions → a better platform → more usage. And it is the platform applying
-**"data as the differentiator" (§4, Pillar 2) to itself** — our own operational
-telemetry is the moat that makes our agents better than any off-the-shelf model
-could be alone.
+**Why it compounds.** The loop is self-reinforcing: more usage → a richer
+knowledge base → better agent decisions → a better platform → more usage. It is
+the platform applying **"data as the differentiator" (Pillar 2) to itself** — our
+own operational telemetry is what makes our agents better than any off-the-shelf
+model could be alone.
 
 ---
 
@@ -658,7 +662,7 @@ endpoints / SDKs** into the product, not SQL notebooks.
 6. **The platform's telemetry is the agents' fuel** — every query and intent
    feeds an in-house **RAG knowledge base**, so routing, optimization, ops and
    scaling decisions **compound with usage** rather than relying on generic
-   heuristics (the RAG Knowledge Flywheel).
+   heuristics (the self-reinforcing RAG Knowledge Base).
 
 ---
 
@@ -799,12 +803,12 @@ These shaped the **"Unified Storage"** (Pillar 1) and **"Agentic Control Plane"*
     feeding low-latency serving stores (Cassandra / Redis) for product features.
     → `https://www.kai-waehner.de/blog/2025/07/08/the-rise-of-kappa-architecture-in-the-era-of-agentic-ai-and-data-streaming/`
 
-### 10.6 RAG & learned optimization (grounding for the Knowledge Flywheel)
+### 10.6 RAG & learned optimization (grounding for the Knowledge Base)
 23. **Retrieval-Augmented Generation (Lewis et al., 2020).** Grounding LLM
     outputs in a retrieved knowledge corpus — the basis for the in-house
     knowledge base built from query + intent telemetry.
     → `https://arxiv.org/abs/2005.11401`
 24. **Learned query optimization (e.g. MIT Bao / Neo).** Using past execution
     feedback to improve query planning & routing — grounds the optimization /
-    routing use cases of the flywheel.
+    routing use cases of the knowledge base.
     → `https://arxiv.org/abs/2004.03814` (Bao)

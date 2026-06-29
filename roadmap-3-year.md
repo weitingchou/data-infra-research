@@ -30,7 +30,7 @@ roadmap moves it to a strong majority by end of Year 3.
 1. **Abstraction before automation.** You cannot auto-route until the **semantic
    layer** decouples logical intent from physical engines. Semantic layer is
    therefore a Year-1 foundation, not a later nicety.
-2. **Instrument before intelligence.** The **RAG knowledge flywheel** needs a
+2. **Instrument before intelligence.** The **RAG knowledge base** needs a
    corpus. We capture every query + intent + plan + outcome from Day 1, long
    before agents consume it.
 3. **Advisory before autonomous.** Agents earn trust on a ladder: **recommend →
@@ -66,7 +66,7 @@ scaling, stewardship) walks this same L0→L3 ladder on the timeline below.
 |---|---|---|---|
 | **Semantic layer** (P2) | Build; certify top domains | Drives compilation & routing | Universal; all access through it |
 | **Unified storage / ILM** (P1) | Iceberg = SoT; SSD cache (Level B) | Auto-tier A/B/C (assisted) | Autonomous tiering |
-| **Telemetry → RAG KB** (flywheel) | Capture 100% of queries+intent | KB live; grounds decisions | Closed-loop, compounding |
+| **Telemetry → RAG KB** (self-reinforcing) | Capture 100% of queries+intent | KB live; grounds decisions | Closed-loop, compounding |
 | **Intent & routing** (P1/§5) | Intent API v1 (rule-based) + recommender | Auto-route (assisted) + dialect compilation | Fully intent-driven, autonomous |
 | **Agentic control plane** (P4) | Safe-exec foundation (test/preview/domains) | Assisted ops agents | Autonomous ops, scaling, stewardship |
 | **Unified Data + AI** (P3) | Plan ML convergence; serve first training data | Workspace v1; Zero-ETL off Oracle | ML platform merged; one workspace |
@@ -107,7 +107,7 @@ possible, plus one high-ROI quick win.
 | 1.1 | **Semantic layer v1** | Central metric/definition catalog, lineage, governance constraints; certify the top domains by query volume | P2 |
 | 1.2 | **Iceberg as single source of truth** | Policy + migration: all new datasets land in Iceberg-on-MinIO; "SoT ≠ single copy" doctrine adopted | P1 |
 | 1.3 | **SSD cache tier (ILM Level B)** | Local-NVMe cache for Trino/Doris external Iceberg tables — recovers latency without a second format | P1 |
-| 1.4 | **Telemetry pipeline** | Capture 100% of queries + declared intent + plans + cost + SLA outcome into a query-history store (the RAG corpus seed) | Flywheel |
+| 1.4 | **Telemetry pipeline** | Capture 100% of queries + declared intent + plans + cost + SLA outcome into a query-history store (the RAG corpus seed) | KB |
 | 1.5 | **Engine-choice recommender v1 (advisory, L1)** | Console suggests Doris vs Lakehouse from the user's declared requirement — the first dent in the N:1 bottleneck | P2/§2 |
 | 1.6 | **Intent API v1** | Users declare WHAT + SLA; a **rule-based** mapper picks the engine (precursor to agentic routing) | P1/§5 |
 | 1.7 | **Safe-execution foundation** | Lightweight cloud testing, preview environments, domain boundaries — the prerequisite for any future autonomy | P4 |
@@ -129,10 +129,10 @@ stops being paged for every routine engine choice.
 
 | # | Initiative | Ships | Pillar |
 |---|---|---|---|
-| 2.1 | **RAG Knowledge Base (live)** | Retrieval over the query/intent/outcome corpus; first agent use cases ground decisions in it | Flywheel |
+| 2.1 | **RAG Knowledge Base (live)** | Retrieval over the query/intent/outcome corpus; first agent use cases ground decisions in it | KB |
 | 2.2 | **Auto-routing + ILM tiering (assisted, L2)** | ILM Levels A/B/C automated; routing decision agent acts on approval, with **Trino-on-Iceberg always-correct fallback** | P1/§5 |
 | 2.3 | **Dialect-safe query compilation** | Semantic-layer compiles to native Doris **or** Trino SQL; SQLGlot/Calcite transpiler for raw SQL | §5 |
-| 2.4 | **Query-optimization agent (RAG-grounded)** | Suggests/auto-applies plans from past winning executions | P4/Flywheel |
+| 2.4 | **Query-optimization agent (RAG-grounded)** | Suggests/auto-applies plans from past winning executions | P4/KB |
 | 2.5 | **Online serving tier — first cases** | Mature Kafka→Flink backbone; online/feature store (Cassandra/Lakebase) for ML **inference**; real-time OLAP for product-facing analytics | §6 |
 | 2.6 | **Unified Data+AI workspace v1** | Integrate ML workflows; **serve training data from the platform** (Zero-ETL off Oracle) for first model teams | P3 |
 | 2.7 | **Assisted ops agents** | Auto-tune + load-testing agents recommend/act-on-approval, grounded by the KB | P4 |
@@ -153,13 +153,13 @@ picks to genuinely complex cases.
 ---
 
 ## Year 3 — AUTONOMY
-**Theme: agents operate the platform within guardrails; fully intent-driven; closed-loop flywheel; Data + AI converged.**
+**Theme: agents operate the platform within guardrails; fully intent-driven; closed-loop knowledge base; Data + AI converged.**
 
 | # | Initiative | Ships | Pillar |
 |---|---|---|---|
 | 3.1 | **Agentic control plane (autonomous, L3)** | Auto-tune, auto-scale, auto-recover, autonomous stewardship — human **on**-loop, approval only for high-risk actions | P4 |
 | 3.2 | **Fully intent-driven platform** | Users/agents declare intent; platform autonomously routes, sizes, tiers, prepares — engine choice fully automated | P1/§5 |
-| 3.3 | **Closed-loop RAG flywheel** | Agents continuously write outcomes + retrieve; decision quality measurably compounds with usage | Flywheel |
+| 3.3 | **Closed-loop RAG knowledge base** | Agents continuously write outcomes + retrieve; decision quality measurably compounds with usage | KB |
 | 3.4 | **Unified Data + AI platform (complete)** | ML platform merged into one workspace; agents orchestrate training **and** inference | P3 |
 | 3.5 | **Product-facing serving GA** | Online serving generalized with hard workload isolation + 99.9%+ SLAs | §6 |
 | 3.6 | **Autonomous infra scaling** | Native continuous load testing + predictive pre-scaling from historical patterns | P4 |
@@ -176,7 +176,7 @@ high-stakes work and shift toward curation & agent oversight.
 - Strong majority of requests intent-driven and auto-routed (North Star).
 - Majority of ops actions autonomous (human-on-loop); MTTR materially down.
 - Unified platform serves all scenarios incl. real-time inference & product serving.
-- Flywheel metrics show decision quality improving period-over-period.
+- Knowledge-base metrics show decision quality improving period-over-period.
 
 ---
 
@@ -233,7 +233,7 @@ high-stakes work and shift toward curation & agent oversight.
 | **Storage & Lakehouse** | Iceberg/MinIO SoT, ILM A/B/C, Trino/Doris, CDC (P1) | 6 | 7 | 7 |
 | **Semantic Layer & Governance** | Semantic layer, catalog, lineage, dialect compilation, governance (P2) | 5 | 7 | 7 |
 | **Ingestion & Streaming** | Spark/Airflow templates, Kafka/Flink, console ingestion (current + §6) | 5 | 6 | 6 |
-| **Agentic / AI Platform** ⭐ | Control plane, RAG KB, LLM agents (route/opt/ops/steward), conversational AI (P4 + flywheel + §3) | 4 | 9 | 12 |
+| **Agentic / AI Platform** ⭐ | Control plane, RAG KB, LLM agents (route/opt/ops/steward), conversational AI (P4 + KB + §3) | 4 | 9 | 12 |
 | **ML Platform** | Unified workspace, online/offline feature store, training & serving (P3) | 3 | 8 | 9 |
 | **Online Serving / Real-time** | Real-time OLAP, online store, product-facing serving + isolation/SLA (§6) | 2 | 6 | 7 |
 | **SRE / Reliability & Cost** | Safe-exec, load testing, autoscaling, on-call, cost (P4 ops) | 4 | 6 | 8 |
@@ -322,5 +322,5 @@ high-stakes work and shift toward curation & agent oversight.
   **assisted** auto-routing/tiering/optimization, online serving lights up, and
   ML training starts being served by the platform.
 - **Year 3 — Autonomy:** an **agentic control plane** runs the platform within
-  guardrails, the platform is **fully intent-driven**, the flywheel closes, and
+  guardrails, the platform is **fully intent-driven**, the self-reinforcing loop closes, and
   Data + AI converge into one unified platform.
