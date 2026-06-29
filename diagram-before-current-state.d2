@@ -1,0 +1,116 @@
+# Current State — Self-Service Platform, but Manual Engine Choice (BEFORE)
+# Render:  d2 diagram-before-current-state.d2 diagram-before-current-state.svg
+
+direction: down
+
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+title: "Current State — Self-Service Platform, but Manual Engine Choice (BEFORE)" {
+  shape: text
+  near: top-center
+  style: {font-size: 28; bold: true}
+}
+
+classes: {
+  source:   {shape: cylinder; style: {fill: "#ECEFF1"; stroke: "#607D8B"}}
+  engine:   {style: {fill: "#E3F2FD"; stroke: "#1565C0"}}
+  store:    {shape: cylinder; style: {fill: "#E1F5FE"; stroke: "#0277BD"}}
+  consumer: {style: {fill: "#E0F2F1"; stroke: "#00796B"}}
+  person:   {shape: person; style: {fill: "#EDE7F6"; stroke: "#5E35B1"}}
+  console:  {style: {fill: "#EDE7F6"; stroke: "#5E35B1"; bold: true}}
+}
+
+# ---- People ----
+users: "Users / Data Owners (mostly app engineers)" {class: person}
+proserv: "Professional Services Team (helps choose & prototype)" {class: person; style: {fill: "#FFF8E1"; stroke: "#F9A825"}}
+
+# ---- Self-service control surface ----
+console: "Self-Service Console — params → provisions pipelines & routing" {class: console}
+
+# ---- Ingestion (templated self-service, NOT hand-built) ----
+ingest: "Spark / Spark-Streaming templates (Airflow-orchestrated)" {class: engine}
+kafka: "Kafka (streaming ingest)" {class: engine}
+
+# ---- Data sources ----
+sources: Data Sources {
+  oracle: "Oracle (legacy RDBMS)" {class: source}
+  ops: "Operational Systems" {class: source}
+  logs: "App Logs / Events" {class: source}
+}
+
+# ---- Analytical platforms (user must MANUALLY choose between these two) ----
+lakehouse: Data Lakehouse {
+  style.fill: "#F5F9FF"
+  iceberg: "Iceberg (open table format)" {shape: page; class: engine}
+  trino: "Trino (query engine)" {class: engine}
+  iceberg -> trino
+}
+warehouse: Data Warehouse {
+  style.fill: "#F5F9FF"
+  doris: Doris {class: engine}
+}
+
+legacy: "Legacy Hadoop Suite (island)" {
+  style: {fill: "#FAFAFA"; stroke-dash: 4}
+  hdfs: HDFS {class: store}
+  mr: MapReduce {class: engine}
+  sp: Spark {class: engine}
+  hbase: HBase {class: store}
+}
+cassandra: "Cassandra (operational — not for analytics)" {class: source}
+
+# ---- ML platform: SEPARATE team, fed from legacy ----
+mlplat: "ML Platform (SEPARATE TEAM)" {
+  style: {fill: "#FFF8E1"; stroke: "#F9A825"; stroke-dash: 4}
+  train: "Model Training" {class: engine}
+}
+
+# ---- Consumers ----
+consumers: Consumers {
+  bi: "BI Charts & Reports (needs real-time)" {class: consumer}
+  adhoc: "Ad-hoc Analysis (long history)" {class: consumer}
+}
+
+# ---- Self-service control flows ----
+users -> console: "params (table, CPU/mem, routing)"
+console -> ingest: provisions
+console -> kafka: "configures routing"
+proserv -> users: "advise: Doris or Lakehouse?" {style: {stroke: "#C62828"; stroke-dash: 3; font-color: "#B71C1C"}}
+
+# ---- Ingestion flows ----
+sources -> ingest: batch
+sources -> kafka: streaming
+ingest -> lakehouse.iceberg
+ingest -> warehouse.doris
+kafka -> lakehouse.iceberg: routed
+kafka -> warehouse.doris: routed
+
+# ---- Bidirectional CDC between the two engines ----
+warehouse.doris <-> lakehouse.iceberg: "CDC replication (both directions)" {style: {stroke: "#0277BD"; stroke-dash: 2}}
+
+# ---- Serving (user manually decided which engine) ----
+lakehouse.trino -> consumers.adhoc
+lakehouse.trino -> consumers.bi
+warehouse.doris -> consumers.bi: real-time
+
+# ---- Legacy ML path (manual extract by separate team) ----
+sources.oracle -> mlplat.train: "manual extract" {style: {stroke: "#C62828"; stroke-dash: 3; font-color: "#B71C1C"}}
+mlplat.train -> consumers: models {style: {stroke: "#C62828"; stroke-dash: 3}}
+
+# ---- Pain-point callout ----
+pains: |md
+  ### Why this needs to change
+  - **Manual engine choice** — users pick Doris *or* Lakehouse per request; **no auto-routing / tiering**
+  - **OLAP-vs-OLTP knowledge burden** on data owners (mostly app engineers)
+  - **Professional services doesn't scale** — humans fill the gap left by missing automation
+  - **No semantic layer** — consumers query physical tables directly
+  - **Two platforms, two teams** — ML separate; training data still **trapped in legacy Oracle**
+  - **No agents** — tuning, scaling & governance all manual
+| {
+  near: bottom-right
+  style: {fill: "#FFEBEE"; stroke: "#C62828"}
+}

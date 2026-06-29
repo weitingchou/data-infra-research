@@ -1,0 +1,161 @@
+# Target State — Unified, Agentic Data & AI Platform (AFTER)
+# Render:  d2 diagram-after-future-vision.d2 diagram-after-future-vision.svg
+
+direction: down
+
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+title: "Target State — Unified, Agentic Data & AI Platform (AFTER)" {
+  shape: text
+  near: top-center
+  style: {font-size: 28; bold: true}
+}
+
+classes: {
+  source:   {shape: cylinder; style: {fill: "#ECEFF1"; stroke: "#607D8B"}}
+  engine:   {style: {fill: "#E3F2FD"; stroke: "#1565C0"}}
+  store:    {shape: cylinder; style: {fill: "#E1F5FE"; stroke: "#0277BD"}}
+  ai:       {style: {fill: "#FFF3E0"; stroke: "#EF6C00"; bold: true}}
+  consumer: {style: {fill: "#E0F2F1"; stroke: "#00796B"}}
+  serving:  {shape: rectangle; style: {fill: "#FCE4EC"; stroke: "#C2185B"; bold: true}}
+  person:   {shape: person; style: {fill: "#EDE7F6"; stroke: "#5E35B1"}}
+}
+
+# ---- Intent-driven entry (replaces the manual, param-driven console) ----
+users: "Users / Data Owners" {class: person}
+aiagents: "AI Agents (acting for users)" {class: ai}
+intent: "Intent API / Console — declare WHAT + SLA, not HOW" {style: {fill: "#EDE7F6"; stroke: "#5E35B1"; bold: true}}
+
+# ---- Sources: now accessed in place, no brittle ETL ----
+sources: "External & Legacy Sources" {
+  oracle: "Oracle (legacy)" {class: source}
+  ops: "Operational DBs" {class: source}
+  stream: "Streaming / Events" {class: source}
+  saas: "SaaS / External APIs" {class: source}
+}
+
+# ---- Pillar 1: Unified Storage (corrected 3-level ILM) ----
+storage: "1 — Unified Storage  ·  Converged Zero-ETL Lakehouse" {
+  style: {fill: "#F5F9FF"; stroke: "#1565C0"}
+  zeroetl: "Zero-ETL + Federated Query (process data in place)" {class: engine}
+  iceberg: "Apache Iceberg on MinIO — single source of truth (one copy, one format)" {class: store}
+  ilm: "AI-driven ILM — routing / promotion decision (by latency SLA)" {class: ai}
+  lifecycle: "A · Object lifecycle — auto-tier hot↔cold media (stays Iceberg)" {class: engine}
+  cache: "B · Local SSD cache — hot Iceberg on NVMe (ephemeral, not a copy)" {class: engine}
+  promote: "C · Bounded Doris-native copy — real-time / high-QPS BI only" {class: store}
+  zeroetl -> iceberg
+  iceberg -> lifecycle: manages
+  iceberg -> cache: caches
+  iceberg -> promote: "materializes (few)"
+  ilm -> lifecycle
+  ilm -> cache
+  ilm -> promote
+}
+
+# ---- Pillar 2: Global Semantic Layer ----
+semantic: "2 — Global Semantic Layer  ·  Accessible Analytics" {
+  style: {fill: "#E8F5E9"; stroke: "#2E7D32"}
+  meaning: "Business logic & metrics"
+  gov: "Privacy / governance constraints"
+  lineage: "Global lineage — self-describing datasets"
+}
+
+# ---- Pillar 3: Unified Data & AI Workspace ----
+workspace: "3 — Unified Data & AI Workspace  ·  Agentic Data Science Hub" {
+  style: {fill: "#F3E5F5"; stroke: "#6A1B9A"}
+  agents: "LLM Agents — features, code, training recovery, optimizers (Hyperopt)" {class: ai}
+  sql: "SQL analytics"
+  proc: "Data processing (Spark)"
+  genai: "GenAI app development"
+  ml: "Distributed ML — XGBoost / Spark MLlib"
+  agents -> ml: orchestrates
+  agents -> sql: orchestrates
+  agents -> genai: orchestrates
+}
+
+# ---- Pillar 4: Agentic Control Plane (cross-cutting) ----
+control: "4 — Agentic Control Plane  ·  Autonomous Ops" {
+  style: {fill: "#FFF8E1"; stroke: "#F9A825"; stroke-dash: 2}
+  tune: "Auto-tune Trino / Spark routing" {class: ai}
+  safe: "Cloud testing + preview envs + domain boundaries" {class: ai}
+  load: "Continuous load testing (Celery workers)" {class: ai}
+  steward: "Data steward agents — privacy / quality / compliance" {class: ai}
+  route: "Auto-route / auto-tier — picks engine & tier (encodes ex-services-team judgment)" {class: ai}
+}
+
+# ---- RAG Knowledge Flywheel (NEW) ----
+kb: "In-house Knowledge Base (RAG) — queries · intent · plans · outcomes" {
+  shape: cylinder
+  style: {fill: "#FFF3E0"; stroke: "#EF6C00"; bold: true}
+}
+
+# ---- Consumers: ML training now served BY the platform ----
+consumers: "Consumers (offline — human / batch)" {
+  bi: "BI Reports (real-time)" {class: consumer}
+  adhoc: "Ad-hoc Analysis (long history)" {class: consumer}
+  mltrain: "ML Training (now first-class on the platform)" {class: consumer}
+}
+
+# ---- Streaming backbone (feeds online tiers AND the lake) ----
+streaming: "Streaming Backbone" {
+  style: {fill: "#F5F9FF"; stroke: "#1565C0"}
+  kafka: "Apache Kafka — durable event log" {class: engine}
+  flink: "Flink — stream processing / feature compute" {class: engine}
+  kafka -> flink
+}
+
+# ---- Online / Product-Facing Serving (NEW) ----
+serving: "5 — Online / Product-Facing Serving (NEW)" {
+  style: {fill: "#FCE4EC"; stroke: "#C2185B"}
+  rtolap: "Real-time OLAP — Doris / Pinot (in-product analytics)" {class: serving}
+  online: "Online / Feature Store — Cassandra / Redis / Lakebase (ML inference)" {shape: cylinder; class: serving}
+}
+
+product: "Product / App  (ms request path · high QPS)" {class: serving}
+
+# ---- End-user consumption paradigm (gradual, partial — §3) ----
+operators: "Business Operators" {class: person}
+convai: "Conversational AI — natural-language answers (growing share)" {class: ai}
+
+# ---- Main upward data flow ----
+sources -> storage.zeroetl: "in place"
+storage.iceberg -> semantic
+semantic -> workspace
+workspace -> consumers.bi
+workspace -> consumers.adhoc
+workspace -> consumers.mltrain
+
+# ---- Control plane governs / optimizes every layer ----
+control -> storage: optimize {style: {stroke: "#F9A825"; stroke-dash: 3}}
+control -> semantic: enforce {style: {stroke: "#F9A825"; stroke-dash: 3}}
+control -> workspace: operate {style: {stroke: "#F9A825"; stroke-dash: 3}}
+
+# ---- Intent-driven flow: declare intent -> platform decides (no manual engine choice) ----
+users -> intent: "intent: 'real-time dashboard, sub-second'"
+aiagents -> intent
+intent -> control: "platform decides engine / tier / size"
+
+# ---- Online / product-facing serving path (NEW) ----
+sources.stream -> streaming.kafka: events
+streaming.flink -> serving.rtolap
+streaming.flink -> serving.online
+streaming.flink -> storage.iceberg: "land (Kappa)"
+storage.iceberg -> serving.rtolap: "materialize / reconcile" {style: {stroke: "#C2185B"; stroke-dash: 3}}
+storage.iceberg -> serving.online: "materialize / reconcile" {style: {stroke: "#C2185B"; stroke-dash: 3}}
+serving.rtolap -> product: serves
+serving.online -> product: serves
+semantic -> serving: "consistent definitions" {style: {stroke: "#2E7D32"; stroke-dash: 3}}
+control -> serving: operate {style: {stroke: "#F9A825"; stroke-dash: 3}}
+
+# ---- RAG flywheel: control plane writes telemetry & retrieves to ground decisions ----
+control -> kb: "writes telemetry (every query · intent · outcome)" {style: {stroke: "#EF6C00"; stroke-dash: 3}}
+kb -> control: "RAG: retrieve to ground decisions" {style: {stroke: "#EF6C00"; stroke-dash: 3}}
+
+# ---- End-user paradigm: operators ask in NL; analysts still hand-build (coexist) ----
+operators -> convai: "ask in natural language"
+convai -> semantic: "grounded query (correct answers)" {style: {stroke: "#2E7D32"; stroke-dash: 3}}
+consumers.bi -> operators: "hand-built dashboards (analysts, still)" {style: {stroke: "#00796B"; stroke-dash: 4}}

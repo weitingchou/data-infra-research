@@ -1,0 +1,8 @@
+# editor / OS cruft
+*.swp
+*.swo
+*~
+.DS_Store
+
+# local agent / session state
+.claude/
