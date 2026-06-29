@@ -133,62 +133,58 @@ owners self-serve and taking us out of the critical path.
 
 ## 3. Vision Statement
 
-Today our platform is already **self-service** — users stand up ingestion
+**Today: self-service, but only as a toolbox.** Users already stand up ingestion
 pipelines, route Kafka streams, and replicate data between Doris and the
-Lakehouse from a console, without waiting on our team. But it is self-service in
-the *toolbox* sense: it hands users powerful low-level controls and then asks
-them to make the expert decisions. They choose Doris or the Lakehouse, size the
-Spark resources, prepare the data on the right engine, and need an
-OLAP-versus-OLTP mental model to do any of it well. Because most data owners are
-application engineers rather than analysts, a **professional-services team** has
-to stand behind the console to make those calls and build prototypes — human
-expertise compensating for judgment the platform does not yet make on its own.
-And because there are **many data-owner teams but only one Platform Team**, every
-such decision funnels through us — a bottleneck, not a flywheel.
+Lakehouse from a console — without waiting on us. But the console hands them
+low-level controls and still expects the expert decisions:
 
-The future platform **inverts that relationship: users declare *intent*, and the
-platform makes the *implementation* decisions.** Rather than "ingest to Doris
-with 8 cores," a user — or an agent acting on their behalf — says "serve this
-dataset for a real-time dashboard at sub-second latency," and the platform
-routes, sizes, tiers, and prepares the data accordingly, choosing Doris, the
-Lakehouse, a cache, or a bounded serving copy by itself. A **global semantic
-layer** hides the physical engines behind consistent, self-describing datasets,
-so no one needs to tell OLAP from OLTP to get a correct, fast answer. An
-**agentic control plane** automates the routing and tiering that are manual
-today, **encoding the professional-services team's hard-won judgment into the
-platform itself** — turning a service that cannot scale into automation that does. And because the
-platform is the **central hub** where every query and intent lands, it learns
-from itself: that usage feeds an **in-house RAG knowledge base** that makes each
-next routing, optimization, and scaling decision smarter — a flywheel, not a
-static rulebook.
+- They choose Doris or the Lakehouse, size the Spark resources, and prepare the
+  data on the right engine — which takes an **OLAP-vs-OLTP** mental model to do well.
+- Most data owners are **application engineers, not analysts**, so a
+  **professional-services team** stands behind the console to make those calls and
+  build prototypes.
+- With **many data-owner teams but one Platform Team**, every such decision
+  funnels through us — a bottleneck.
 
-And it **converges** what is split today: the data platform and the separate ML
-platform become one unified Data & AI environment, where the same governed data
-serves dashboards, ad-hoc analysis, model training, real-time **inference**, and
+**The shift: from controls to intent.** Instead of "ingest to Doris with 8
+cores," a user — or an agent acting for them — says **"serve this dataset for a
+real-time dashboard at sub-second latency,"** and the platform makes the
+implementation decisions:
+
+- **Intent-driven routing.** The platform routes, sizes, tiers, and prepares the
+  data itself — choosing Doris, the Lakehouse, a cache, or a bounded serving copy.
+- **A global semantic layer** hides the physical engines behind consistent,
+  self-describing datasets, so no one needs to tell OLAP from OLTP to get a
+  correct, fast answer.
+- **An agentic control plane** automates the routing and tiering that are manual
+  today, encoding the professional-services team's judgment into the platform so
+  it scales.
+- **The platform learns from its own usage.** Every query and intent lands here,
+  and that usage feeds an **in-house RAG knowledge base** that makes each next
+  routing, optimization, and scaling decision better over time — not a static rulebook.
+
+**Convergence: one Data & AI platform.** The data platform and the separate ML
+platform merge into a single environment, where the same governed data serves
+dashboards, ad-hoc analysis, model training, real-time **inference**, and
 product-facing serving alike — with **LLM agents as the central orchestration
 layer** across ingestion, storage, analytics, and machine learning *(extends
 AWS's lakes + BI + ML vision, ref [8])*.
 
-**The end-user paradigm shifts, too — gradually, and never fully.** Today
-thousands of analysts and data scientists are the main *interface* between the
-platform and the business — hand-building reports, dashboards, and models so
-business operators can consume the answers. As agentic AI matures, a **growing
-share** of that interface becomes conversational: a **business operator can ask
-a question in natural language** and an agent derives the answer **directly from
-the platform**, grounded in the semantic layer's certified metrics and the
-governed data so it is *correct*, not merely fluent. This won't be 100% —
-**analysts and data scientists keep hand-building** the complex, bespoke, and
-high-stakes reports, dashboards, and models — but the *mix* tilts: routine,
-self-serve questions get answered on demand, freeing experts for the work that
-genuinely needs them. The effect is a **gradual reshaping of our personas**: the
-**agent becomes a first-class consumer** alongside humans, **business operators
-become more direct users**, and analysts / data scientists shift *up the value
-chain* — toward **curating semantics, building & governing models, and
-supervising agents** — without disappearing. Crucially, **this plan is already
-built for it**: a platform whose agents declare intent, retrieve over a governed
-semantic layer, and are grounded by the RAG flywheel is exactly the substrate a
-conversational, operator-facing AI needs to answer correctly — at whatever share
-of demand it ultimately serves.
+**The end-user mix shifts too — gradually, never fully.** Today analysts and
+data scientists are the main *interface* between the platform and the business,
+hand-building reports, dashboards, and models. As agentic AI matures:
+
+- **Business operators can ask in natural language**, and an agent derives the
+  answer directly from the platform, grounded in the semantic layer's certified
+  metrics so it is *correct*, not just fluent.
+- **Analysts and data scientists keep hand-building** the complex, bespoke, and
+  high-stakes work; the routine, self-serve questions are what get answered on demand.
+- **Personas reshape:** the agent becomes a first-class consumer alongside
+  humans, business operators become more direct users, and analysts / data
+  scientists shift toward **curating semantics, governing models, and supervising agents**.
+- **The plan already supports this:** a platform whose agents declare intent,
+  retrieve over a governed semantic layer, and are grounded by the RAG knowledge
+  base is exactly what a conversational, operator-facing AI needs to answer correctly.
 
 > **In one line:** move from a *self-service toolbox that still demands
 > expertise* to an *intent-driven, agent-operated platform that makes the expert
