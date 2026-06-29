@@ -520,11 +520,14 @@ the semantic layer. Three mechanisms, layered:
 
 ## 6. Online / Product-Facing Serving (the missing online path)
 
-**The gap.** Scenarios 1–3 are all *offline* — humans reading dashboards, humans
-running ad-hoc queries, and ML **training**. None serves a live product **in the
-request path**. This scenario adds exactly that: the platform serves application
-traffic directly (à la Uber's apps reading fresh platform data live, and
-real-time ML **inference** — the inference half that training alone doesn't cover).
+**The gap.** Scenarios 1–3 are all *offline*; none serves a live product **in the
+request path** — this scenario (4) adds exactly that:
+
+- **Offline today (scenarios 1–3):** humans reading dashboards, humans running
+  ad-hoc queries, and ML **training**.
+- **Online, new (scenario 4):** the platform serves application traffic directly —
+  à la Uber's apps reading fresh platform data live, plus real-time ML
+  **inference** (the inference half that training alone doesn't cover).
 
 > **Relation to the blueprint (§5):** this online path *extends* Layer 5 (serving)
 > and Layer 6 (output) with a **streaming backbone** (Kafka → Flink) and an
