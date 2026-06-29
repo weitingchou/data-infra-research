@@ -382,13 +382,16 @@ model could be alone.
 ## 5. Architectural Blueprint — The 6-Layer Stack
 
 This is the **concrete realization** of the four pillars — the physical layer
-stack. It adapts a16z's 2020 *Unified Architecture* and *AI/ML blueprint* (ref [5]), but
-**collapses** the heavy decoupled ingestion pipelines and the isolated ML
-model-serving clusters into a single converged platform where **LLMs actively
-operate the infrastructure layer** (Meta-scale internal-platform reference, ref [6]). It draws on the AWS *Open Data Foundation
-for Agentic AI* whitepapers (Iceberg-native, zero-ETL) and the Databricks *Data
-Intelligence Platform* reference architecture (convergence under an AI-driven
-catalog).
+stack. It builds on prior reference architectures but **converges** what they
+keep separate:
+
+- **Adapts** a16z's 2020 *Unified Architecture* and *AI/ML blueprint* (ref [5]) —
+  but **collapses** the heavy decoupled ingestion pipelines and isolated ML
+  model-serving clusters into a single platform where **LLMs actively operate the
+  infrastructure layer** (Meta-scale internal-platform reference, ref [6]).
+- **Draws on** the AWS *Open Data Foundation for Agentic AI* whitepapers
+  (Iceberg-native, zero-ETL) and the Databricks *Data Intelligence Platform*
+  reference architecture (convergence under an AI-driven catalog).
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
