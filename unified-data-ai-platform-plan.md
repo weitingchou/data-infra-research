@@ -400,17 +400,21 @@ their domain · 🔍 *Data Users* benefit from the reliability (consume SLOs).
 *Not a fifth pillar but a capability that spans all four — it turns the
 platform's own usage into what makes its agents smarter.*
 
-**Why we have the data.** The platform is the **central data hub** — *every*
-query, and increasingly every **intent** (§3), lands and is processed here — so we
-sit on a uniquely rich corpus:
+**What we have today — the signal exists, but it's transient.** The platform is
+already the **central hub**: *every* query, and increasingly every **intent**
+(§3), flows through us, so the raw signal — what was asked, by whom, over which
+datasets, how it was planned and routed, what it cost, and whether it met its SLA
+— is right there in front of us. But today it is **thrown away**: we don't capture
+or learn from it, and the judgment it encodes lives in the professional-services
+team's heads (§2).
 
-- **What we capture:** what was asked, by whom, over which datasets, how it was
-  planned and routed, what it cost, and whether it met its SLA.
-- **How agents use it:** we keep that corpus as an **in-house knowledge base** and
-  let agents **retrieve over it (RAG)** to ground decisions in what has actually
-  worked here before — not generic heuristics.
+**The gap to build:**
+- **Capture the corpus.** Persist every query + intent + plan + cost + SLA outcome
+  into an **in-house knowledge base** (the Year-1 telemetry pipeline).
+- **Ground agents with RAG.** Let agents **retrieve over it** to base each decision
+  on what has actually worked here before — not generic heuristics.
 
-**What it feeds** — the AI-driven parts already in this plan:
+**What it then feeds** — the AI-driven parts already in this plan:
 
 - **Query optimization** — retrieve similar past queries and their winning plans
   to guide execution.
