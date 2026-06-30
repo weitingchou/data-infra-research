@@ -111,7 +111,7 @@ owners self-serve and taking us out of the critical path.
 |---|---|---|---|
 | **P1** · Lakehouse, Iceberg, object storage | **B** | — | — |
 | **P1** · Zero-ETL / federation connectors | **B** | **O** onboard & register sources | — |
-| **P1** · ILM mechanisms (object lifecycle · SSD cache · bounded serving copy) | **B** | sets retention / SLA inputs | — |
+| **P1** · Lifecycle management — ILM (object lifecycle · SSD cache · bounded serving copy) | **B** | sets retention / SLA inputs | — |
 | **P2** · Semantic-layer framework + lineage | **B** | — | — |
 | **P2** · Metric & business-logic definitions | provides tooling | **O** author & certify | **U** consume / request |
 | **P2** · Privacy & governance constraints | **B** enforce | **O** define per domain | **U** comply |
@@ -232,9 +232,13 @@ are still **separate engines users must choose between by hand** (the §1 fricti
     copy), read Iceberg via Trino (*correctness beats latency*); and **consistency
     comes from the semantic layer, not identical SQL** — the same metric
     definition returns the same number on either engine.
-- **Storage tiering & serving mechanisms (ILM).** *Single source of truth ≠ single
-  physical copy.* Iceberg-on-MinIO is canonical for **all** data; derived tiers are
-  allowed only if auto-derived from Iceberg and reconcilable to it. Three levels:
+- **Storage tiering & serving — Information Lifecycle Management (ILM).** ILM is
+  the discipline of **managing data across its lifecycle** — placing each dataset
+  on the right storage tier or serving copy as it ages and its access pattern
+  changes, traded off by cost and latency, **without altering its logical
+  identity**. Here that means *single source of truth ≠ single physical copy*:
+  Iceberg-on-MinIO is canonical for **all** data, and derived tiers are allowed
+  only if auto-derived from Iceberg and reconcilable to it. Three levels:
   - **A · Lake object lifecycle** — tier Iceberg files hot→warm→cold; compact /
     expire snapshots. *Format-agnostic — the data stays Iceberg.* (cf. AWS S3
     Intelligent-Tiering, ref [11]; Databricks Predictive Optimization, ref [12].)

@@ -13,7 +13,7 @@ platform that makes the expert decisions for them*.
 
 | Document | What it is |
 |---|---|
-| [`unified-data-ai-platform-plan.md`](./unified-data-ai-platform-plan.md) | The vision/concept note — current state, personas, the four pillars, the 6-layer architectural blueprint, the corrected ILM model, query routing, online/product-facing serving, and the self-reinforcing RAG knowledge base. |
+| [`unified-data-ai-platform-plan.md`](./unified-data-ai-platform-plan.md) | The vision/concept note — current state, personas, the four pillars, the 6-layer architectural blueprint, the corrected lifecycle-management (ILM) model, query routing, online/product-facing serving, and the self-reinforcing RAG knowledge base. |
 | [`roadmap-3-year.md`](./roadmap-3-year.md) | The sequenced 3-year roadmap — **Foundation → Intelligence → Autonomy**, agentic maturity ladder, phase gates, KPIs, risks, decisions, and the **team plan**. |
 
 ## Architecture at a glance
