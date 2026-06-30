@@ -48,6 +48,9 @@ d2 diagram-after-future-vision.d2  diagram-after-future-vision.svg
   tiering — built rule-based, with AI optimizing the decisions later.
 - **Global Semantic Layer** — meaning, metrics, lineage, and governance encoded
   once so every engine and agent answers consistently and correctly.
+- **Unified Data & AI Workspace** — merge data engineering and the separate ML
+  platform into one agentic workspace, where **LLMs orchestrate traditional ML**
+  (XGBoost / Spark MLlib + Hyperopt) rather than replace it.
 - **Agentic Control Plane** — agents that auto-route, auto-tune, auto-scale, and
   steward, grounded by a **self-reinforcing RAG knowledge base** built from the platform's own
   query + intent telemetry.
