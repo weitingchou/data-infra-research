@@ -408,13 +408,13 @@ team's heads (§2).
 **The gap to build:**
 - **Capture the corpus.** Persist every query + intent + plan + cost + SLA outcome
   into an **in-house knowledge base** (the Year-1 telemetry pipeline).
-- **Ground agents with RAG.** Let agents **retrieve over it** to base each decision
-  on what has actually worked here before — not generic heuristics.
+- **Ground agents with RAG.** Let agents **retrieve over it** (RAG, ref [23]) to
+  base each decision on what has actually worked here before — not generic heuristics.
 
 **What it then feeds** — the AI-driven parts already in this plan:
 
 - **Query optimization** — retrieve similar past queries and their winning plans
-  to guide execution.
+  to guide execution (learned query optimization, ref [24]).
 - **Query / data routing** — the ILM promotion decision (Pillar 1) and the
   bi-modal routing (§5) consult prior outcomes to pick Doris / Trino / cache /
   native copy.
@@ -457,7 +457,7 @@ keep separate:
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ LAYER 2 · AGENTIC CONTROL PLANE & SEMANTIC LAYER                         │
 │     replaces standalone catalogs + manual pipeline orchestration         │
-│     • LLM auto-routing        • Privacy / compliance guardrails          │
+│     • Routing (rule→agent)    • Privacy / compliance guardrails          │
 │     • Universal semantic layer — one metric definition for BI = ML       │
 │     • AI-driven catalog (Databricks-style convergence)                   │
 └──────────────────────────────────────────────────────────────────────────┘
@@ -629,8 +629,8 @@ or a human BI engine — it needs **purpose-built serving tiers**.
 - **Streaming backbone (Kafka → Flink)** feeds the online tiers *and* lands in
   Iceberg (Kappa-style), so online and offline see one event stream.
 - **The same semantic layer governs both** — a metric or feature has one
-  definition whether served to a dashboard, a model, or the product (§5 routing /
-  consistency principle).
+  definition whether served to a dashboard, a model, or the product (§4 Pillar 1
+  routing; §5 consistency principle).
 
 ### New consumer
 
