@@ -338,36 +338,65 @@ datasets · 🔍 *Data Users* consume certified datasets and request new metrics
 
 ### Pillar 3 — Converged Data & AI Platform (Agentic Data Science Hub)
 *Goal: converge the data platform and the separate ML platform into **one** — a
-single agentic workspace where the same governed data serves analytics, ML
-training, and inference, with LLMs orchestrating traditional ML.*
+single, **uniformly governed** environment where the same data serves analytics,
+ML training, and inference, with LLM agents orchestrating (not replacing)
+traditional ML.*
 
-**What we have today — two separate worlds.** The **ML platform is built and run by
-a separate team** (§1), and most model training still pulls from **legacy infra
-(e.g. Oracle)** rather than our platform. Data engineering and ML use different
-tools and workflows — there is no shared workspace, and no agent layer
-orchestrating either.
+**What we have today — two separate worlds, two governance regimes.** The **ML
+platform is built and run by a separate team** (§1), and most model training still
+pulls from **legacy infra (e.g. Oracle)** rather than our platform. The deeper
+problem isn't just duplicated tooling — it's **governance and security**: two
+platforms run by two teams inevitably enforce access control, PII handling,
+lineage, and audit **differently**, so the *same* data can be tightly controlled
+on one side and loosely handled on the other, and **no one can prove a single
+policy holds across both**. For a security-conscious company, that inconsistency
+is the real risk.
 
 **The gap to build:**
-- **Converge the two platforms into one** *(Databricks unified Data & AI concept,
-  ref [9])*. The separate ML platform's capabilities fold into ours under a single
-  ownership (§9), so **the same governed data and agents serve analytics, ML
-  training, real-time inference, and product-facing serving** — not two stacks
-  bridged by hand.
-- **One unified workspace** where SQL analytics, data processing, and generative-AI
-  app development coexist.
-- **LLMs as orchestrators of traditional ML — they orchestrate, they don't replace:**
-  - **LLM agents = intelligent architects** — advanced reasoning, strategic
-    feature-engineering suggestions, and executable-code generation.
-  - **Heavy statistical compute stays distributed** — XGBoost, Spark MLlib over
-    structured data on the cluster.
-  - **Agents drive the optimizers** — e.g. operate Hyperopt to solve cold-start
-    problems and automate model-training recovery.
-
-  This refines the earlier "LLM replaces the data scientist for auto-training" idea
-  into the more durable **"LLM as orchestrator of traditional ML."**
-- **New output modalities** this unlocks: **autonomous AI "data scientists"** (LLMs
-  querying governed data directly) and **RAG-native agentic apps** that read/write
-  Iceberg tables.
+- **Converge the two platforms into one — under a single governance & security
+  policy** *(Databricks unified Data & AI concept, ref [9])*. The separate ML
+  platform folds into ours under one ownership (§9), so the **same governed data**
+  serves analytics, ML training, real-time inference, and product-facing serving.
+  The decisive win: governance is then **defined once and enforced everywhere** —
+  access control, PII masking, lineage, retention, and audit (the Pillar 2
+  semantic layer's rules) apply uniformly across BI **and** AI, with no second
+  platform to drift out of policy. This matters more as **AI agents themselves
+  become data consumers**: every model and agent inherits the same guardrails, so
+  giving AI broad access no longer means widening the leak surface.
+- **One unified workspace** where data analysis, data processing, and AI-app
+  development happen in one place — instead of data scientists **exporting data to
+  a separate stack**, which is exactly where governance and security break down.
+- **LLM agents orchestrate traditional ML — they run the work, they don't do the
+  math.** *Traditional ML* means building predictive models from data — e.g.
+  forecasting demand, flagging fraud, or predicting which customers are about to
+  **churn** (stop buying). Doing it well has always needed scarce data-science
+  experts for a lot of fiddly setup and babysitting. An LLM agent now automates
+  that **coordination**, while **proven, specialized math engines still do the
+  actual number-crunching** — LLMs are unreliable at precise computation, so we
+  never bet correctness on them:
+  - **The analogy.** The agent is the **experienced project lead** — it
+    understands the goal, prepares the inputs, picks and configures the right
+    tools, runs the job, checks the results, and fixes failures. The math engines
+    (e.g. **XGBoost**, **Spark MLlib**) are the **heavy machinery** that does the
+    computation. We let the lead run the job site; we don't ask it to pour the
+    concrete by hand.
+  - **A concrete example — "which customers will churn next month?"** Today a data
+    scientist spends days: finding and cleaning the right data, building the
+    predictive signals, choosing and configuring a model, running training on the
+    cluster, tuning it by trial-and-error, and restarting when a run breaks. The
+    agent now does that scaffolding end-to-end and **auto-recovers from failed
+    runs**; a human reviews the result. Experts are freed for the genuinely novel,
+    hard problems.
+  - **Why "orchestrate, not replace."** The proven engines stay accountable for
+    the math (accurate, efficient, auditable); the agent handles what it is good
+    at (understanding intent, planning, writing setup code, coordinating,
+    recovering). That split is durable and safe — and it makes model-building
+    **faster and accessible to far more teams**, not just the few with deep
+    data-science benches.
+- **New output modalities** this unlocks: **autonomous AI "data scientists"** —
+  agents that query the governed data directly to answer business questions — and
+  **AI applications grounded in our own data**, which retrieve from the lakehouse
+  so their answers are accurate and write results back to it.
 
 **Personas:** 🛠️ *Platform Team* builds the workspace, agent framework & compute
 runtimes · 📦 *Data Owners* keep domain data ML-ready · 🔍 *Data Users* — **this
@@ -692,7 +721,7 @@ endpoints / SDKs** into the product, not SQL notebooks.
 |---|---|---|---|---|
 | 1. Unified Platform | Iceberg/Doris/Trino in production — but **separate engines**, manual engine choice; ETL from Oracle | One platform over them: rule-based routing + engineering ILM (AI-optimized later) | Iceberg, Trino federation, Doris/ClickHouse, MinIO | 🛠️ Platform builds · 📦 Owners onboard |
 | 2. Semantic Layer | No central semantic layer — metrics in per-report SQL & tribal knowledge; users hit raw physical tables | Global semantic layer: one **certified** definition; Accessible Analytics, not physical tables | Central semantic layer, lineage, embedded privacy | 🛠️ Platform builds · 📦 Owners define · 🔍 Users consume |
-| 3. Converged Data & AI | Separate ML platform (different team), training off legacy Oracle; no shared workspace or agent layer | One converged Data & AI platform — ML folds in; same data serves analytics / training / inference; LLMs orchestrate traditional ML | LLM agents + XGBoost/Spark MLlib + Hyperopt | 🛠️ Platform builds · 🔍 Users build models |
+| 3. Converged Data & AI | Separate ML platform (different team), training off legacy Oracle; **governance / security enforced differently on each** | One converged platform under **one governance & security policy**; same data serves analytics / training / inference; LLM agents orchestrate (not replace) traditional ML | LLM agents + XGBoost/Spark MLlib + Hyperopt | 🛠️ Platform builds · 🔍 Users build models |
 | 4. Operations (Control Plane) | Manual, reactive ops — hand-tuning & firefighting; no safe sandbox for automated change | Agentic control plane: autonomous ops & stewardship on a safe-execution foundation | Agent auto-tuning, Celery load testing, steward agents | 🛠️ Platform builds & operates · 📦 Owners remediate |
 | 5. Online serving *(new)* | Offline only (human / batch); nothing serves a live product in the request path | Product-facing real-time serving + ML inference | Kafka / Flink, Doris / Pinot, Cassandra / Redis / Lakebase | 🛠️ Platform builds · 📱 Product teams consume |
 
