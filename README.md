@@ -24,6 +24,14 @@ platform that makes the expert decisions for them*.
 ### Target state — unified, agentic Data & AI platform
 ![Target state](./diagram-after-future-vision.png)
 
+Users (or agents) declare *intent*, and the platform decides how to serve it. A
+**bi-modal serving & query-routing layer** sends each request — as logical intent,
+not raw SQL — to **Doris** (real-time / fast-refresh BI) or **Trino** (ad-hoc
+history) over one Iceberg source of truth, with **Trino-on-Iceberg as the
+always-correct fallback**. Routing is rule-based first and agent-optimized later;
+the semantic layer governs it, the control plane operates it, and the
+self-reinforcing RAG knowledge base grounds the decisions.
+
 Diagram sources are [D2](https://d2lang.com/); rendered `.svg` / `.png` are
 checked in alongside. To re-render:
 
