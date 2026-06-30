@@ -38,12 +38,12 @@ sources: "External & Legacy Sources" {
   saas: "SaaS / External APIs" {class: source}
 }
 
-# ---- Pillar 1: Unified Storage (corrected 3-level ILM) ----
-storage: "1 — Unified Storage  ·  Converged Zero-ETL Lakehouse" {
+# ---- Pillar 1: Unified Platform — storage half (engineering ILM, 3 levels) ----
+storage: "1 — Unified Platform  ·  Storage (Iceberg SoT + engineering ILM)" {
   style: {fill: "#F5F9FF"; stroke: "#1565C0"}
   zeroetl: "Zero-ETL + Federated Query (process data in place)" {class: engine}
   iceberg: "Apache Iceberg on MinIO — single source of truth (one copy, one format)" {class: store}
-  ilm: "AI-driven ILM — routing / promotion decision (by latency SLA)" {class: ai}
+  ilm: "Engineering ILM — rule-based tiering (control plane optimizes)" {class: engine}
   lifecycle: "A · Object lifecycle — auto-tier hot↔cold media (stays Iceberg)" {class: engine}
   cache: "B · Local SSD cache — hot Iceberg on NVMe (ephemeral, not a copy)" {class: engine}
   promote: "C · Bounded Doris-native copy — real-time / high-QPS BI only" {class: store}
@@ -54,6 +54,16 @@ storage: "1 — Unified Storage  ·  Converged Zero-ETL Lakehouse" {
   ilm -> lifecycle
   ilm -> cache
   ilm -> promote
+}
+
+# ---- Pillar 1 (cont.): Bi-modal Serving & Query Routing (folded in from §4) ----
+query: "1 — Unified Platform  ·  Bi-modal Serving & Query Routing" {
+  style: {fill: "#F5F9FF"; stroke: "#1565C0"}
+  router: "Query router — logical intent, not raw SQL (rule-routed; agents optimize)" {class: engine}
+  doris: "Doris — real-time / fast-refresh BI" {class: engine}
+  trino: "Trino — ad-hoc history · always-correct Iceberg fallback" {class: engine}
+  router -> doris: "curated · low-latency"
+  router -> trino: "ad-hoc · fallback"
 }
 
 # ---- Pillar 2: Global Semantic Layer ----
@@ -125,12 +135,17 @@ convai: "Conversational AI — natural-language answers (growing share)" {class:
 sources -> storage.zeroetl: "in place"
 storage.iceberg -> semantic
 semantic -> workspace
-workspace -> consumers.bi
-workspace -> consumers.adhoc
 workspace -> consumers.mltrain
+
+# ---- Bi-modal serving: semantic-compiled queries routed to Doris / Trino over one Iceberg SoT ----
+semantic -> query.router: "compiled queries (one definition)"
+storage.iceberg -> query: "serve over one SoT (+ cache / Doris copy)"
+query.doris -> consumers.bi: "real-time"
+query.trino -> consumers.adhoc: "ad-hoc"
 
 # ---- Control plane governs / optimizes every layer ----
 control -> storage: optimize {style: {stroke: "#F9A825"; stroke-dash: 3}}
+control -> query: "route / optimize" {style: {stroke: "#F9A825"; stroke-dash: 3}}
 control -> semantic: enforce {style: {stroke: "#F9A825"; stroke-dash: 3}}
 control -> workspace: operate {style: {stroke: "#F9A825"; stroke-dash: 3}}
 
