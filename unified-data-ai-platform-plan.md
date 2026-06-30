@@ -670,13 +670,13 @@ endpoints / SDKs** into the product, not SQL notebooks.
 
 ## 7. Summary Table
 
-| Pillar / Capability | From (today) | To (vision) | Key tech | Persona focus |
-|--------|--------------|-------------|----------|---------------|
-| 1. Unified Platform | Separate engines, manual engine choice, ETL from Oracle | One platform over Iceberg/Doris/Trino — rule-based routing + engineering ILM (AI-optimized later) | Iceberg, Trino federation, Doris/ClickHouse, MinIO | 🛠️ Platform builds · 📦 Owners onboard |
-| 2. Semantic | Physical tables | Global semantic layer / accessible analytics | Central semantic layer, lineage, embedded privacy | 🛠️ Platform builds · 📦 Owners define · 🔍 Users consume |
-| 3. Data Science | Separate ML platform, legacy training data | Unified agentic Data + AI hub | LLM agents + XGBoost/Spark MLlib + Hyperopt | 🛠️ Platform builds · 🔍 Users build models |
-| 4. Operations | Manual tuning & monitoring | Autonomous ops & stewardship | Agent auto-tuning, Celery load testing, steward agents | 🛠️ Platform builds & operates · 📦 Owners remediate |
-| 5. Online serving *(new)* | Offline only (human / batch) | Product-facing real-time serving + ML inference | Kafka / Flink, Doris / Pinot, Cassandra / Redis / Lakebase | 🛠️ Platform builds · 📱 Product teams consume |
+| Pillar / Capability | Have today | Gap to build → vision | Key tech | Persona focus |
+|---|---|---|---|---|
+| 1. Unified Platform | Iceberg/Doris/Trino in production — but **separate engines**, manual engine choice; ETL from Oracle | One platform over them: rule-based routing + engineering ILM (AI-optimized later) | Iceberg, Trino federation, Doris/ClickHouse, MinIO | 🛠️ Platform builds · 📦 Owners onboard |
+| 2. Semantic Layer | No central semantic layer — metrics in per-report SQL & tribal knowledge; users hit raw physical tables | Global semantic layer: one **certified** definition; Accessible Analytics, not physical tables | Central semantic layer, lineage, embedded privacy | 🛠️ Platform builds · 📦 Owners define · 🔍 Users consume |
+| 3. Data Science Hub | Separate ML platform (different team), training off legacy Oracle; no shared workspace or agent layer | One unified Data + AI workspace; LLMs orchestrate traditional ML | LLM agents + XGBoost/Spark MLlib + Hyperopt | 🛠️ Platform builds · 🔍 Users build models |
+| 4. Operations (Control Plane) | Manual, reactive ops — hand-tuning & firefighting; no safe sandbox for automated change | Agentic control plane: autonomous ops & stewardship on a safe-execution foundation | Agent auto-tuning, Celery load testing, steward agents | 🛠️ Platform builds & operates · 📦 Owners remediate |
+| 5. Online serving *(new)* | Offline only (human / batch); nothing serves a live product in the request path | Product-facing real-time serving + ML inference | Kafka / Flink, Doris / Pinot, Cassandra / Redis / Lakebase | 🛠️ Platform builds · 📱 Product teams consume |
 
 ---
 
