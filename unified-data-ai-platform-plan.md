@@ -65,7 +65,7 @@
   one Platform Team**.
 
 ### The two core beliefs driving this vision
-1. **Adopt Databricks' "unified Data + AI platform" *concept*** — merge the data
+1. **Adopt Databricks' "unified Data & AI platform" *concept*** — merge the data
    platform and the ML platform into one. (The *concept* only — per company
    policy we **build it ourselves on open source**, not buy the product; see §9.)
 2. **The future platform should be agent-native** — LLM agents as a first-class
@@ -348,7 +348,7 @@ tools and workflows — there is no shared workspace, and no agent layer
 orchestrating either.
 
 **The gap to build:**
-- **Converge the two platforms into one** *(Databricks unified Data + AI concept,
+- **Converge the two platforms into one** *(Databricks unified Data & AI concept,
   ref [9])*. The separate ML platform's capabilities fold into ours under a single
   ownership (§9), so **the same governed data and agents serve analytics, ML
   training, real-time inference, and product-facing serving** — not two stacks
@@ -692,7 +692,7 @@ endpoints / SDKs** into the product, not SQL notebooks.
 |---|---|---|---|---|
 | 1. Unified Platform | Iceberg/Doris/Trino in production — but **separate engines**, manual engine choice; ETL from Oracle | One platform over them: rule-based routing + engineering ILM (AI-optimized later) | Iceberg, Trino federation, Doris/ClickHouse, MinIO | 🛠️ Platform builds · 📦 Owners onboard |
 | 2. Semantic Layer | No central semantic layer — metrics in per-report SQL & tribal knowledge; users hit raw physical tables | Global semantic layer: one **certified** definition; Accessible Analytics, not physical tables | Central semantic layer, lineage, embedded privacy | 🛠️ Platform builds · 📦 Owners define · 🔍 Users consume |
-| 3. Converged Data + AI | Separate ML platform (different team), training off legacy Oracle; no shared workspace or agent layer | One converged Data + AI platform — ML folds in; same data serves analytics / training / inference; LLMs orchestrate traditional ML | LLM agents + XGBoost/Spark MLlib + Hyperopt | 🛠️ Platform builds · 🔍 Users build models |
+| 3. Converged Data & AI | Separate ML platform (different team), training off legacy Oracle; no shared workspace or agent layer | One converged Data & AI platform — ML folds in; same data serves analytics / training / inference; LLMs orchestrate traditional ML | LLM agents + XGBoost/Spark MLlib + Hyperopt | 🛠️ Platform builds · 🔍 Users build models |
 | 4. Operations (Control Plane) | Manual, reactive ops — hand-tuning & firefighting; no safe sandbox for automated change | Agentic control plane: autonomous ops & stewardship on a safe-execution foundation | Agent auto-tuning, Celery load testing, steward agents | 🛠️ Platform builds & operates · 📦 Owners remediate |
 | 5. Online serving *(new)* | Offline only (human / batch); nothing serves a live product in the request path | Product-facing real-time serving + ML inference | Kafka / Flink, Doris / Pinot, Cassandra / Redis / Lakebase | 🛠️ Platform builds · 📱 Product teams consume |
 
