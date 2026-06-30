@@ -69,7 +69,7 @@ scaling, stewardship) walks this same L0→L3 ladder on the timeline below.
 | **Telemetry → RAG KB** (self-reinforcing) | Capture 100% of queries+intent | KB live; grounds decisions | Closed-loop, compounding |
 | **Intent & routing** (P1/§5) | Intent API v1 (rule-based) + recommender | Auto-route (assisted) + dialect compilation | Fully intent-driven, autonomous |
 | **Agentic control plane** (P4) | Safe-exec foundation (test/preview/domains) | Assisted ops agents | Autonomous ops, scaling, stewardship |
-| **Unified Data + AI** (P3) | Plan ML convergence; serve first training data | Workspace v1; Zero-ETL off Oracle | ML platform merged; one workspace |
+| **Converged Data + AI** (P3) | Plan ML convergence; serve first training data | Workspace v1; Zero-ETL off Oracle | ML platform merged; one workspace |
 | **Online serving** (§6) | Harden streaming backbone | Feature store + product-facing OLAP (first cases) | Product-facing serving GA |
 | **Org / professional services** | Recommender deflects routine asks | PS shifts to complex cases + curation | PS repurposed to platform/agent curation |
 | **End-user access** (§3 paradigm) | Hand-built reports / dashboards (analysts) | + conversational Q&A for operators (first domains) | Growing-share NL self-serve; experts still hand-build complex / high-stakes |
@@ -171,7 +171,7 @@ stops being paged for every routine engine choice.
 | 2.3 | **Dialect-safe query compilation** | Semantic-layer compiles to native Doris **or** Trino SQL; SQLGlot/Calcite transpiler for raw SQL | §5 |
 | 2.4 | **Query-optimization agent (RAG-grounded)** | Suggests/auto-applies plans from past winning executions | P4/KB |
 | 2.5 | **Online serving tier — first cases** | Mature Kafka→Flink backbone; online/feature store (Cassandra/Lakebase) for ML **inference**; real-time OLAP for product-facing analytics | §6 |
-| 2.6 | **Unified Data+AI workspace v1** | Integrate ML workflows; **serve training data from the platform** (Zero-ETL off Oracle) for first model teams | P3 |
+| 2.6 | **Converged Data+AI workspace v1** | Integrate ML workflows; **serve training data from the platform** (Zero-ETL off Oracle) for first model teams | P3 |
 | 2.7 | **Assisted ops agents** | Auto-tune + load-testing agents recommend/act-on-approval, grounded by the KB | P4 |
 | 2.8 | **Conversational analytics (first domains)** | Business operators ask in natural language; an agent answers **through the semantic layer** (for correctness) on well-governed domains — analysts keep hand-building the rest | P2/§3 |
 
@@ -214,7 +214,7 @@ picks to genuinely complex cases.
 | 3.1 | **Agentic control plane (autonomous, L3)** | Auto-tune, auto-scale, auto-recover, autonomous stewardship — human **on**-loop, approval only for high-risk actions | P4 |
 | 3.2 | **Fully intent-driven platform** | Users/agents declare intent; platform autonomously routes, sizes, tiers, prepares — engine choice fully automated | P1/§5 |
 | 3.3 | **Closed-loop RAG knowledge base** | Agents continuously write outcomes + retrieve; decision quality measurably compounds with usage | KB |
-| 3.4 | **Unified Data + AI platform (complete)** | ML platform merged into one workspace; agents orchestrate training **and** inference | P3 |
+| 3.4 | **Converged Data + AI platform (complete)** | ML platform merged into one workspace; agents orchestrate training **and** inference | P3 |
 | 3.5 | **Product-facing serving GA** | Online serving generalized with hard workload isolation + 99.9%+ SLAs | §6 |
 | 3.6 | **Autonomous infra scaling** | Native continuous load testing + predictive pre-scaling from historical patterns | P4 |
 | 3.7 | **Operator-facing conversational AI (broad)** | NL Q&A across governed domains for a **growing share** of routine questions; analysts / DS still hand-build the complex & high-stakes reports, dashboards & models | P2/§3 |
