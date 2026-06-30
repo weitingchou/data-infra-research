@@ -194,6 +194,13 @@ hand-building reports, dashboards, and models. As agentic AI matures:
 
 ## 4. What We Need to Build — The Four Pillars + a Cross-Cutting Enabler
 
+Together the four pillars **converge our data platform and the separate ML
+platform into one Data & AI platform** (§1, core belief #1) — one foundation, one
+semantic layer, one workspace, one control plane, where the same governed data
+serves analytics, ML training, real-time inference, and product-facing serving.
+That convergence is the plan's overarching goal; **Pillar 3** carries it most
+directly.
+
 ### Pillar 1 — Unified Data Platform ("Unify the Engines We Already Run")
 *Goal: make the storage and engines we already run — Iceberg, Doris, Trino —
 behave as **one platform**, so users and agents stop hand-picking engines. This is
@@ -329,9 +336,10 @@ datasets · 🔍 *Data Users* consume certified datasets and request new metrics
 
 ---
 
-### Pillar 3 — Agentic AI Data Science Hub
-*Goal: merge data engineering and ML into one workspace, with LLMs orchestrating
-traditional ML.*
+### Pillar 3 — Converged Data & AI Platform (Agentic Data Science Hub)
+*Goal: converge the data platform and the separate ML platform into **one** — a
+single agentic workspace where the same governed data serves analytics, ML
+training, and inference, with LLMs orchestrating traditional ML.*
 
 **What we have today — two separate worlds.** The **ML platform is built and run by
 a separate team** (§1), and most model training still pulls from **legacy infra
@@ -340,8 +348,13 @@ tools and workflows — there is no shared workspace, and no agent layer
 orchestrating either.
 
 **The gap to build:**
+- **Converge the two platforms into one** *(Databricks unified Data + AI concept,
+  ref [9])*. The separate ML platform's capabilities fold into ours under a single
+  ownership (§9), so **the same governed data and agents serve analytics, ML
+  training, real-time inference, and product-facing serving** — not two stacks
+  bridged by hand.
 - **One unified workspace** where SQL analytics, data processing, and generative-AI
-  app development coexist (the Databricks unification, ref [9], made concrete).
+  app development coexist.
 - **LLMs as orchestrators of traditional ML — they orchestrate, they don't replace:**
   - **LLM agents = intelligent architects** — advanced reasoning, strategic
     feature-engineering suggestions, and executable-code generation.
@@ -679,7 +692,7 @@ endpoints / SDKs** into the product, not SQL notebooks.
 |---|---|---|---|---|
 | 1. Unified Platform | Iceberg/Doris/Trino in production — but **separate engines**, manual engine choice; ETL from Oracle | One platform over them: rule-based routing + engineering ILM (AI-optimized later) | Iceberg, Trino federation, Doris/ClickHouse, MinIO | 🛠️ Platform builds · 📦 Owners onboard |
 | 2. Semantic Layer | No central semantic layer — metrics in per-report SQL & tribal knowledge; users hit raw physical tables | Global semantic layer: one **certified** definition; Accessible Analytics, not physical tables | Central semantic layer, lineage, embedded privacy | 🛠️ Platform builds · 📦 Owners define · 🔍 Users consume |
-| 3. Data Science Hub | Separate ML platform (different team), training off legacy Oracle; no shared workspace or agent layer | One unified Data + AI workspace; LLMs orchestrate traditional ML | LLM agents + XGBoost/Spark MLlib + Hyperopt | 🛠️ Platform builds · 🔍 Users build models |
+| 3. Converged Data + AI | Separate ML platform (different team), training off legacy Oracle; no shared workspace or agent layer | One converged Data + AI platform — ML folds in; same data serves analytics / training / inference; LLMs orchestrate traditional ML | LLM agents + XGBoost/Spark MLlib + Hyperopt | 🛠️ Platform builds · 🔍 Users build models |
 | 4. Operations (Control Plane) | Manual, reactive ops — hand-tuning & firefighting; no safe sandbox for automated change | Agentic control plane: autonomous ops & stewardship on a safe-execution foundation | Agent auto-tuning, Celery load testing, steward agents | 🛠️ Platform builds & operates · 📦 Owners remediate |
 | 5. Online serving *(new)* | Offline only (human / batch); nothing serves a live product in the request path | Product-facing real-time serving + ML inference | Kafka / Flink, Doris / Pinot, Cassandra / Redis / Lakebase | 🛠️ Platform builds · 📱 Product teams consume |
 
