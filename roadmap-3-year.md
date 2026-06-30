@@ -65,7 +65,7 @@ scaling, stewardship) walks this same L0→L3 ladder on the timeline below.
 | Workstream (→ vision pillar) | Year 1 — Foundation | Year 2 — Intelligence | Year 3 — Autonomy |
 |---|---|---|---|
 | **Semantic layer** (P2) | Build; certify top domains | Drives compilation & routing | Universal; all access through it |
-| **Unified storage / ILM** (P1) | Iceberg = SoT; SSD cache (Level B) | Auto-tier A/B/C (assisted) | Autonomous tiering |
+| **Unified platform / ILM** (P1) | Iceberg = SoT; SSD cache (Level B) | Auto-tier A/B/C (assisted) | Autonomous tiering |
 | **Telemetry → RAG KB** (self-reinforcing) | Capture 100% of queries+intent | KB live; grounds decisions | Closed-loop, compounding |
 | **Intent & routing** (P1/§5) | Intent API v1 (rule-based) + recommender | Auto-route (assisted) + dialect compilation | Fully intent-driven, autonomous |
 | **Agentic control plane** (P4) | Safe-exec foundation (test/preview/domains) | Assisted ops agents | Autonomous ops, scaling, stewardship |

@@ -197,8 +197,9 @@ hand-building reports, dashboards, and models. As agentic AI matures:
 ### Pillar 1 — Unified Data Platform ("Unify the Engines We Already Run")
 *Goal: make the storage and engines we already run — Iceberg, Doris, Trino —
 behave as **one platform**, so users and agents stop hand-picking engines. This is
-the **platform-engineering** pillar: it builds the **mechanism**, while the three
-AI pillars automate the **decisions**.*
+the **platform-engineering** pillar: it builds the **mechanism**, while the other
+three pillars add the AI intelligence on top — chiefly the control plane (Pillar 4)
+and the knowledge base, which automate the **decisions**.*
 
 **What we already run — the foundation, not the gap.** Iceberg on MinIO, Trino
 (federation), Doris (hot OLAP), and CDC between them are **already in production**.
@@ -267,12 +268,6 @@ without any model. **Which** dataset to cache or promote, and **where** to route
 borderline query, is a *decision* the agentic control plane (Pillar 4) and the
 self-reinforcing KB **automate later** — but the mechanism must exist first, with
 or without AI.
-
-**Maps to our current stack:** Iceberg ✅, Trino (federation) ✅, Doris (hot OLAP)
-✅, CDC ✅ — **already in production**. The new work is the **unified
-serving / routing layer**, the **tiering & serving mechanisms**, and **Zero-ETL
-ingestion** — all plain platform engineering; AI automation of the routing /
-promotion *decisions* comes later (Pillar 4 + the enabler).
 
 **Personas:** 🛠️ *Platform Team* builds the unified serving / routing layer, the
 tiering engine & connectors · 📦 *Data Owners* onboard and register their source
@@ -395,6 +390,8 @@ a human action.
 **Personas:** 🛠️ *Platform Team* builds & runs the control plane and steward
 agents and sets the guardrails · 📦 *Data Owners* act on steward-agent alerts for
 their domain · 🔍 *Data Users* benefit from the reliability (consume SLOs).
+
+---
 
 ### Cross-cutting enabler — the Self-Reinforcing RAG Knowledge Base
 *Not a fifth pillar but a capability that spans all four — it turns the
