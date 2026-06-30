@@ -282,23 +282,31 @@ engine choice.
 ---
 
 ### Pillar 2 — Global Semantic Layer & "Accessible Analytics"
-*Goal: shift data engineering from moving physical tables to curating meaning.*
+*Goal: shift data engineering from moving physical tables to curating meaning — one
+definition of the business that every engine and agent shares.*
 
-- The core function of data engineering shifts from **moving data** → **building
-  "Accessible Analytics"** *(Meta, ref [7])*: semantically rich, logical datasets instead of raw
-  physical tables.
-- A **central semantic layer** encodes **meaning, business logic, and privacy
-  constraints globally** across the entire data lineage.
-- **Outcome:** whether a user loads a real-time metrics dashboard or runs a
-  multi-year Trino query, they interact with a **single, consistent,
-  self-describing** representation of the business.
-- This is also the **prerequisite for trustworthy agents** — agents need a
-  semantic layer to reason over the data correctly (and serves the
-  "modern BI blueprint" idea from the a16z reference, ref [5]).
-- **It is the "trust" leg of agentic data access** *(AWS, ref [1])*. The open
-  foundation's promise that agents can *find, access, **trust**, and act* on data
-  is only realizable if meaning, lineage, and privacy constraints are encoded
-  here — semantics + governance are what make autonomous action safe.
+**What we have today — meaning lives outside the platform.** There is no central
+semantic layer. Metrics, business logic, and privacy rules live in per-report SQL,
+BI tools, and tribal knowledge, so the same metric (e.g. "monthly active users")
+can mean different things in different dashboards, and owners re-encode definitions
+per engine. Users still work directly against raw physical tables.
+
+**The gap to build:**
+- **A central semantic layer** that encodes **meaning, business logic, and privacy
+  constraints globally** across the entire data lineage — defined **once**, not
+  re-derived per report.
+- **"Accessible Analytics," not physical tables** *(Meta, ref [7])* — semantically
+  rich, self-describing logical datasets, so whether a user loads a real-time
+  dashboard or runs a multi-year Trino query they meet a **single, consistent**
+  representation of the business.
+- **Authoring & certification** — data owners author and **certify** metrics and
+  privacy rules, and the layer then enforces the same definitions everywhere.
+
+**Why it matters — beyond BI, it is what makes agents safe and gen-AI valuable:**
+- **The "trust" leg of agentic data access** *(AWS, ref [1])* and the prerequisite
+  for trustworthy agents: they can only *find, access, **trust**, and act* on data
+  if meaning, lineage, and privacy are encoded here (also the a16z "modern BI
+  blueprint," ref [5]).
 - **Data is the differentiator for gen AI** *(AWS Gen AI white paper, ref [4]).*
   As foundation models commoditize, the model stops being the edge — everyone
   calls the same LLM. The lasting advantage is your **proprietary, well-governed
@@ -323,22 +331,31 @@ datasets · 🔍 *Data Users* consume certified datasets and request new metrics
 ---
 
 ### Pillar 3 — Agentic AI Data Science Hub
-*Goal: merge data engineering and ML into one workspace; LLMs orchestrate ML.*
+*Goal: merge data engineering and ML into one workspace, with LLMs orchestrating
+traditional ML.*
 
-- **Unified workspace** where SQL analytics, data processing, and generative-AI
+**What we have today — two separate worlds.** The **ML platform is built and run by
+a separate team** (§1), and most model training still pulls from **legacy infra
+(e.g. Oracle)** rather than our platform. Data engineering and ML use different
+tools and workflows — there is no shared workspace, and no agent layer
+orchestrating either.
+
+**The gap to build:**
+- **One unified workspace** where SQL analytics, data processing, and generative-AI
   app development coexist (the Databricks unification, ref [9], made concrete).
-- **Hybrid strategy — LLMs orchestrate, they don't replace.**
-  - **LLM agents = intelligent architects:** advanced reasoning, strategic
+- **LLMs as orchestrators of traditional ML — they orchestrate, they don't replace:**
+  - **LLM agents = intelligent architects** — advanced reasoning, strategic
     feature-engineering suggestions, and executable-code generation.
-  - **Heavy statistical compute stays distributed:** XGBoost, Spark MLlib over
+  - **Heavy statistical compute stays distributed** — XGBoost, Spark MLlib over
     structured data on the cluster.
-  - **Agents drive the optimizers:** e.g., operate Hyperopt to solve
-    cold-start problems and automate model-training recovery.
-- This refines the earlier "LLM replaces the data scientist for auto-training"
-  idea into a more durable **"LLM as orchestrator of traditional ML"** model.
-- **New output modalities** this unlocks: **autonomous AI "data scientists"**
-  (LLMs querying governed data directly) and **RAG-native agentic apps** that
-  read/write Iceberg tables.
+  - **Agents drive the optimizers** — e.g. operate Hyperopt to solve cold-start
+    problems and automate model-training recovery.
+
+  This refines the earlier "LLM replaces the data scientist for auto-training" idea
+  into the more durable **"LLM as orchestrator of traditional ML."**
+- **New output modalities** this unlocks: **autonomous AI "data scientists"** (LLMs
+  querying governed data directly) and **RAG-native agentic apps** that read/write
+  Iceberg tables.
 
 **Personas:** 🛠️ *Platform Team* builds the workspace, agent framework & compute
 runtimes · 📦 *Data Owners* keep domain data ML-ready · 🔍 *Data Users* — **this
@@ -347,29 +364,33 @@ is their home**: build models, run SQL/GenAI, and direct the agents.
 ---
 
 ### Pillar 4 — Autonomous Operations & Infrastructure Scaling ("Agentic Control Plane")
-*Goal: agents run and protect the platform.*
+*Goal: agents run and protect the platform — humans set policy, agents operate.*
 
-- **From reactive assistants to proactive autonomous systems** *(AWS, Rethinking
-  SaaS in the Agentic Era, ref [3]).* The end state is agents that
-  **understand, decide, and act with minimal oversight** — the platform shifts
-  from tools humans operate to a control plane agents operate, with humans
-  setting policy and approving high-risk actions.
-- **Auto-optimization:** agents continuously monitor physical execution plans
-  and historical query performance to **auto-tune Trino/Spark routing**.
-- **An environment where agents can operate effectively *and safely*** *(AWS,
-  Architecting for Agentic AI Development, ref [2]).* Combine three things so
-  agents can act without breaking production:
+**What we have today — operations are manual and reactive.** Engineers tune
+Trino/Spark by hand, monitor and firefight, and make scaling calls case by case.
+Nothing operates the platform autonomously, and there is **no safe sandbox** for
+automated changes — so today every optimization, recovery, and scaling decision is
+a human action.
+
+**The gap to build:**
+- **The safe-execution foundation, first** *(AWS, Architecting for Agentic AI
+  Development, ref [2])* — the prerequisite that lets agents act without breaking
+  production:
   - **Lightweight cloud testing** — cheap, fast, isolated test runs per agent action.
   - **Preview environments** — agents validate changes in disposable replicas
     before they touch production.
   - **Domain-driven structure** — clear domain boundaries so an agent's blast
     radius is scoped and its actions are intelligible.
-- **Native, continuous load testing:** distributed, Celery-managed **k6** workers built
-  into the deployment pipeline so the platform can absorb **massive ad-hoc
-  analytical spikes**.
-- **Agents as automated data stewards:** continuously monitor pipelines to
-  enforce **privacy, compliance, and data-quality** standards across the
+- **An agentic control plane** that moves ops **from reactive assistants to
+  proactive autonomous systems** *(AWS, Rethinking SaaS in the Agentic Era, ref
+  [3])* — agents that **understand, decide, and act** within policy, humans on-loop
+  to approve high-risk actions. Concretely: **auto-tuning** Trino/Spark routing
+  from execution plans and historical performance, and **automated data stewards**
+  that enforce **privacy, compliance, and data-quality** standards across the
   ecosystem.
+- **Native, continuous load testing** — distributed, Celery-managed **k6** workers
+  built into the deployment pipeline so the platform can absorb **massive ad-hoc
+  analytical spikes**.
 
 **Personas:** 🛠️ *Platform Team* builds & runs the control plane and steward
 agents and sets the guardrails · 📦 *Data Owners* act on steward-agent alerts for
